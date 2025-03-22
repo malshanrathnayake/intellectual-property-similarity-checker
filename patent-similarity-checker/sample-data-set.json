@@ -1,0 +1,32 @@
+[
+    {
+        "patent_Id": "WO2024123456",
+        "title": "Autonomous Drone Navigation System",
+        "abstract": "An autonomous navigation system for drones using real-time obstacle avoidance and AI-based decision-making to enhance flight safety and precision.",
+        "claims": "1. A drone navigation system comprising: a sensor array for obstacle detection; a processing unit configured to analyze sensor data using artificial intelligence algorithms; and actuators responsive to the processing unit for real-time path adjustment to avoid detected obstacles."
+    },
+    {
+        "patent_Id": "WO2023123457",
+        "title": "Solar-Powered Electric Vehicle Charger",
+        "abstract": "A sustainable electric vehicle charging station utilizing solar energy with integrated energy storage for continuous vehicle charging capability.",
+        "claims": "1. A vehicle charging station comprising: photovoltaic panels configured to harvest solar energy; a battery management system for storing and managing harvested energy; and a charging unit capable of fast-charging electric vehicles."
+    },
+    {
+        "patent_Id": "WO2023123458",
+        "title": "Biodegradable Food Packaging Material",
+        "abstract": "Environmentally friendly biodegradable packaging made from plant-based materials providing extended shelf life for perishable food products.",
+        "claims": "1. A biodegradable packaging material comprising: plant-derived biopolymers; natural preservatives integrated within the packaging layer; wherein the packaging maintains the freshness of food items without contributing to environmental waste."
+    },
+    {
+        "patent_Id": "WO2023123459",
+        "title": "AI-Assisted Medical Diagnosis System",
+        "abstract": "A medical diagnosis assistance system leveraging artificial intelligence to enhance accuracy and speed of patient condition diagnosis from medical imaging.",
+        "claims": "1. A medical diagnosis system comprising: image acquisition modules compatible with standard medical imaging equipment; an artificial intelligence module trained to identify patterns indicative of medical conditions; and an interactive reporting tool for healthcare professionals."
+    },
+    {
+        "patent_Id": "WO2023123460",
+        "title": "Smart Agricultural Irrigation Device",
+        "abstract": "An automated irrigation system employing IoT sensors and weather data integration to optimize agricultural water use efficiency.",
+        "claims": "1. A smart irrigation system comprising: moisture and nutrient sensors embedded in agricultural soil; a wireless communication module for transmitting sensor data; and an automated control unit utilizing weather forecasts to optimize water delivery schedules."
+    }
+]
