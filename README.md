@@ -1,0 +1,2 @@
+# intellectual-property-similarity-checker
+ 
