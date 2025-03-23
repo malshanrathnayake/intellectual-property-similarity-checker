@@ -23,6 +23,9 @@ blockchain/contracts/yarn-debug.log*
 blockchain/blockchain-api/yarn-error.log*
 blockchain/contracts/yarn-error.log*
 
+blockchain/blockchain-api/package-lock.json
+blockchain/contracts/package-lock.json
+
 # Ignore Solidity Hardhat files
 blockchain/contracts/artifacts/
 blockchain/contracts/cache/

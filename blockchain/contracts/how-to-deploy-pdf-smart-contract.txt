@@ -1,0 +1,179 @@
+
+# ================================
+# PDF Property Smart Contract Deployment Guide
+# ================================
+
+📁 Folder: blockchain/contracts
+
+## 📦 Step 1: Initialize and Install Required Packages
+
+npm init -y
+
+npm install --save-dev hardhat @openzeppelin/contracts dotenv @nomicfoundation/hardhat-toolbox
+
+## 🧱 Step 2: Initialize Hardhat Project
+
+npx hardhat
+
+# Choose "Create a JavaScript project"
+# Accept default path: ./hardhat.config.js
+
+## 📁 Step 3: Project Structure
+
+Create folders and files:
+- contracts/PropertyRegistry.sol
+- scripts/deploy.js
+- .env
+
+Final Structure:
+blockchain/contracts/
+├── contracts/
+│   └── PropertyRegistry.sol
+├── scripts/
+│   └── deploy.js
+├── .env
+├── hardhat.config.js
+├── package.json
+
+---
+
+## ✍️ Step 4: Write Solidity Smart Contract
+
+📄 contracts/PropertyRegistry.sol
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract PropertyRegistry is ERC721, Ownable {
+    uint256 public tokenIdCounter;
+
+    struct Property {
+        string ipfsHash;
+        address owner;
+        uint256 timestamp;
+    }
+
+    mapping(uint256 => Property) public properties;
+
+    event PropertyRegistered(uint256 indexed tokenId, address indexed owner, string ipfsHash, uint256 timestamp);
+    event PropertyTransferred(uint256 indexed tokenId, address indexed from, address indexed to, uint256 timestamp);
+
+    constructor() ERC721("PdfPropertyRegistry", "PDFPROP") Ownable(msg.sender) {}
+
+    function registerProperty(string memory ipfsHash, address owner) external returns (uint256) {
+        tokenIdCounter++;
+        uint256 newTokenId = tokenIdCounter;
+        _safeMint(owner, newTokenId);
+        properties[newTokenId] = Property(ipfsHash, owner, block.timestamp);
+        emit PropertyRegistered(newTokenId, owner, ipfsHash, block.timestamp);
+        return newTokenId;
+    }
+
+    function transferProperty(address to, uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender, "You are not the property owner");
+        _transfer(msg.sender, to, tokenId);
+        properties[tokenId].owner = to;
+        emit PropertyTransferred(tokenId, msg.sender, to, block.timestamp);
+    }
+
+    function getPropertyDetails(uint256 tokenId) external view returns (Property memory) {
+        require(tokenId > 0 && tokenId <= tokenIdCounter, "Property does not exist");
+        return properties[tokenId];
+    }
+}
+```
+
+---
+
+## 🧠 Step 5: Configure .env File
+
+📄 .env
+
+```
+INFURA_API_KEY=your_infura_project_id
+PRIVATE_KEY=your_wallet_private_key_without_0x
+```
+
+---
+
+## ⚙️ Step 6: Configure hardhat.config.js
+
+📄 hardhat.config.js
+
+```js
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+
+module.exports = {
+  solidity: "0.8.20",
+  networks: {
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
+    }
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  }
+};
+```
+
+---
+
+## 🚀 Step 7: Create Deployment Script
+
+📄 scripts/deploy.js
+
+```js
+const hre = require("hardhat");
+
+async function main() {
+  const PropertyRegistry = await hre.ethers.getContractFactory("PropertyRegistry");
+  const propertyRegistry = await PropertyRegistry.deploy();
+  await propertyRegistry.waitForDeployment();
+
+  const address = await propertyRegistry.getAddress();
+  console.log("PropertyRegistry deployed at:", address);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+```
+
+---
+
+## 🛠️ Step 8: Compile the Contract
+
+```bash
+npx hardhat clean
+npx hardhat compile
+```
+
+---
+
+## 🌐 Step 9: Deploy to Sepolia Testnet
+
+```bash
+npx hardhat run scripts/deploy.js --network sepolia
+```
+
+✅ This will output:
+```
+PropertyRegistry deployed at: 0xYourContractAddress
+```
+
+Save this contract address for use in your Web API or Node.js service.
+
+---
+
+✅ Done!
+You now have a fully working Ethereum smart contract for registering PDF IPFS hashes as NFT properties.
