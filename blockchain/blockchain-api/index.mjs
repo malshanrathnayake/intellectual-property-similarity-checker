@@ -4,9 +4,7 @@ import { Wallet, Contract, JsonRpcProvider } from 'ethers';
 import cors from 'cors';
 import fs from 'fs';
 import fileUpload from 'express-fileupload';
-import { Buffer } from 'buffer'; // Required for Base64
-
-
+require('dotenv').config();
 
 
 const app = express();
@@ -26,9 +24,9 @@ const ipfs = create({
 
 // Ethereum setup (via Moralis or Infura)
 // const provider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/7b3fbb83265547e7a0b4de05e8ce5a7a');
-const provider = new JsonRpcProvider('https://sepolia.infura.io/v3/7b3fbb83265547e7a0b4de05e8ce5a7a');
+const provider = new JsonRpcProvider(`https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`);
 
-const privateKey = '66da535eee55409c6006f4d0a9e2dd8d0d137f4f052d75270f55adc751498a7d';
+const privateKey = `${process.env.PRIVATE_KEY}`;
 // const wallet = new ethers.Wallet(privateKey, provider);
 const wallet = new Wallet(privateKey, provider);
 
@@ -38,7 +36,7 @@ const wallet = new Wallet(privateKey, provider);
 const contractJson = JSON.parse(fs.readFileSync('contract-abi.json'));
 const contractABI = contractJson.abi;
 
-const contractAddress = '0x94b8f7159e346e4F8cff2211C829BFBdc3d1bAAA';//npx hardhat compile && npx hardhat run scripts/deploy.js --network sepolia 
+const contractAddress = `${process.env.CONTRACT_ADDRESS}`;//npx hardhat compile && npx hardhat run scripts/deploy.js --network sepolia 
 // const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 const contract = new Contract(contractAddress, contractABI, wallet);
 

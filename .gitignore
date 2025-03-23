@@ -32,6 +32,9 @@ blockchain/contracts/dist/
 blockchain/contracts/.env
 blockchain/contracts/.env.local
 blockchain/contracts/.env.*.local
+blockchain/blockchain-api/.env
+blockchain/blockchain-api/.env.local
+blockchain/blockchain-api/.env.*.local
 
 # Ignore Python files
 __pycache__/
