@@ -4,8 +4,7 @@ import { Wallet, Contract, JsonRpcProvider } from 'ethers';
 import cors from 'cors';
 import fs from 'fs';
 import fileUpload from 'express-fileupload';
-require('dotenv').config();
-
+import 'dotenv/config';
 
 const app = express();
 app.use(express.json());

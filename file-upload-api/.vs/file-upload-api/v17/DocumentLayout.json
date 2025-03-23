@@ -1,20 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|d:\\malshan -local\\git\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\services\\blockchainservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|solutionrelative:file-upload-api\\services\\blockchainservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|d:\\malshan -local\\git\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\controllers\\pdfsimilarityapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|solutionrelative:file-upload-api\\controllers\\pdfsimilarityapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|d:\\malshan -local\\git\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2582A3B9-6098-4C51-A4F4-A7399ECBE031}|file-upload-api\\file-upload-api.csproj|solutionrelative:file-upload-api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -22,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -43,45 +30,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Program.cs",
-              "RelativeDocumentMoniker": "file-upload-api\\Program.cs",
-              "ToolTip": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Program.cs",
-              "RelativeToolTip": "file-upload-api\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T15:12:45.517Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "BlockchainService.cs",
-              "DocumentMoniker": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Services\\BlockchainService.cs",
-              "RelativeDocumentMoniker": "file-upload-api\\Services\\BlockchainService.cs",
-              "ToolTip": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Services\\BlockchainService.cs",
-              "RelativeToolTip": "file-upload-api\\Services\\BlockchainService.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAiwFAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-23T13:43:05.06Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PdfSimilarityApiController.cs",
-              "DocumentMoniker": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Controllers\\PdfSimilarityApiController.cs",
-              "RelativeDocumentMoniker": "file-upload-api\\Controllers\\PdfSimilarityApiController.cs",
-              "ToolTip": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\Controllers\\PdfSimilarityApiController.cs",
-              "RelativeToolTip": "file-upload-api\\Controllers\\PdfSimilarityApiController.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAiwEkAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T21:55:00.188Z",
-              "EditorCaption": ""
             }
           ]
         }
