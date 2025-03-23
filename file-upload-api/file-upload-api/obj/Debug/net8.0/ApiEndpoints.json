@@ -65,8 +65,8 @@
   },
   {
     "ContainingType": "file_upload_api.Controllers.PdfSimilarityApiController",
-    "Method": "CheckSimilarity",
-    "RelativePath": "api/PdfSimilarityApi/check",
+    "Method": "CheckAndRegister",
+    "RelativePath": "api/PdfSimilarityApi/check_similarity",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

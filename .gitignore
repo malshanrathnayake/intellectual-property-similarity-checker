@@ -1,0 +1,52 @@
+# Ignore Visual Studio Code settings
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Ignore Visual Studio files
+file-upload-api/.vs/
+file-upload-api/*.suo
+file-upload-api/*.user
+file-upload-api/*.userosscache
+file-upload-api/*.sln.docstates
+file-upload-api/*.cache
+
+# Ignore Node.js dependencies
+blockchain/blockchain-api/node_modules/
+blockchain/contracts/node_modules/
+blockchain/blockchain-api/npm-debug.log*
+blockchain/contracts/npm-debug.log*
+blockchain/blockchain-api/yarn-debug.log*
+blockchain/contracts/yarn-debug.log*
+blockchain/blockchain-api/yarn-error.log*
+blockchain/contracts/yarn-error.log*
+
+# Ignore Solidity Hardhat files
+blockchain/contracts/artifacts/
+blockchain/contracts/cache/
+blockchain/contracts/coverage/
+blockchain/contracts/coverage.json
+blockchain/contracts/dist/
+blockchain/contracts/.env
+blockchain/contracts/.env.local
+blockchain/contracts/.env.*.local
+
+# Ignore Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.eggs/
+dist/
+build/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

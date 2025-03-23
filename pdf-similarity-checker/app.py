@@ -10,15 +10,16 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# Load pre-trained Hugging Face model
+# Base directory and files
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+index_file = os.path.join(BASE_DIR, "pdf_embeddings.index")
+metadata_file = os.path.join(BASE_DIR, "pdf_metadata.json")
+
+# Load pre-trained model
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+embedding_dim = 384
 
-# Vector database (FAISS index)
-index_file = "pdf_embeddings.index"
-metadata_file = "pdf_metadata.json"
-embedding_dim = 384  # Dimension for 'all-MiniLM-L6-v2'
-
-# Initialize FAISS index
+# Initialize FAISS + metadata
 if os.path.exists(index_file):
     index = faiss.read_index(index_file)
     with open(metadata_file, 'r') as f:
@@ -35,6 +36,7 @@ def extract_text(pdf_file):
             text += page.get_text()
     return text
 
+# Upload and train endpoint
 @app.route('/upload_and_train', methods=['POST'])
 def upload_and_train():
     try:
@@ -44,11 +46,9 @@ def upload_and_train():
         text = extract_text(pdf)
         embedding = model.encode(text)
 
-        # Store embedding into FAISS
         index.add(np.array([embedding]))
         metadata.append({"filename": pdf_name})
 
-        # Save the index and metadata
         faiss.write_index(index, index_file)
         with open(metadata_file, 'w') as f:
             json.dump(metadata, f)
@@ -58,6 +58,7 @@ def upload_and_train():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Check similarity endpoint
 @app.route('/check_similarity', methods=['POST'])
 def check_similarity():
     try:
@@ -65,20 +66,33 @@ def check_similarity():
         text = extract_text(pdf)
         embedding = model.encode(text)
 
-        # Perform similarity search (nearest neighbor)
-        distances, indices = index.search(np.array([embedding]), k=3)  # top 3 similar results
+        num_embeddings = index.ntotal
+        if num_embeddings == 0:
+            return jsonify({
+                "similar_pdfs": [],
+                "message": "No PDFs in the database to compare against."
+            })
+
+        k = min(3, num_embeddings)
+        distances, indices = index.search(np.array([embedding]), k=k)
 
         results = []
+        seen_files = set()
         for distance, idx in zip(distances[0], indices[0]):
-            results.append({
-                "filename": metadata[idx]['filename'],
-                "similarity": float(1 / (1 + distance))  # convert distance to similarity (0-1)
-            })
+            if 0 <= idx < len(metadata):
+                filename = metadata[idx]['filename']
+                if filename not in seen_files:
+                    results.append({
+                        "filename": filename,
+                        "similarity": float(1 / (1 + distance))
+                    })
+                    seen_files.add(filename)
 
         return jsonify({"similar_pdfs": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Run server
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

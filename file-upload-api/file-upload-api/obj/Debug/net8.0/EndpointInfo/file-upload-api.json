@@ -163,7 +163,7 @@
         }
       }
     },
-    "/api/PdfSimilarityApi/check": {
+    "/api/PdfSimilarityApi/check_similarity": {
       "post": {
         "tags": [
           "PdfSimilarityApi"
