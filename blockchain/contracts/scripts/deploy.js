@@ -4,10 +4,10 @@ async function main() {
   const PropertyRegistry = await hre.ethers.getContractFactory("PropertyRegistry");
   const propertyRegistry = await PropertyRegistry.deploy();
 
-  // ✅ Wait for deployment to finish
+  //Wait for deployment to finish
   await propertyRegistry.waitForDeployment();
 
-  // ✅ Get the deployed address
+  //Get the deployed address
   const address = await propertyRegistry.getAddress();
 
   console.log("PropertyRegistry deployed at:", address);
