@@ -45,6 +45,8 @@ blockchain/contracts/build/
 file-upload-api/.vs/
 file-upload-api/bin/
 file-upload-api/obj/
+file-upload-api/file-upload-api/bin/
+file-upload-api/file-upload-api/obj/
 
 # Image Similarity Checker
 image-similarity-checker/image_embeddings.index
