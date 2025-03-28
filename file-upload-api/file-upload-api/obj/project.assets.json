@@ -486,7 +486,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\MalshanRathnayake\\.nuget\\packages\\": {},
+    "D:\\Softwares\\.nuget\\packages": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -495,7 +495,7 @@
       "projectUniqueName": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\file-upload-api.csproj",
       "projectName": "file-upload-api",
       "projectPath": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\file-upload-api.csproj",
-      "packagesPath": "C:\\Users\\MalshanRathnayake\\.nuget\\packages\\",
+      "packagesPath": "D:\\Softwares\\.nuget\\packages",
       "outputPath": "D:\\Malshan -Local\\GIT\\intellectual-property-similarity-checker\\file-upload-api\\file-upload-api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [

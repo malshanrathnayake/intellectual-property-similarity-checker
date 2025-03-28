@@ -1,58 +1,66 @@
-# Ignore Visual Studio Code settings
-.vscode/
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
+# General
+*.log
+*.tmp
+*.swp
+*.bak
+*.pid
+*.seed
+*.pid.lock
+*.DS_Store
+Thumbs.db
 
-# Ignore Visual Studio files
-file-upload-api/.vs/
-file-upload-api/*.suo
-file-upload-api/*.user
-file-upload-api/*.userosscache
-file-upload-api/*.sln.docstates
-file-upload-api/*.cache
-
-# Ignore Node.js dependencies
-blockchain/blockchain-api/node_modules/
-blockchain/contracts/node_modules/
-blockchain/blockchain-api/npm-debug.log*
-blockchain/contracts/npm-debug.log*
-blockchain/blockchain-api/yarn-debug.log*
-blockchain/contracts/yarn-debug.log*
-blockchain/blockchain-api/yarn-error.log*
-blockchain/contracts/yarn-error.log*
-
-blockchain/blockchain-api/package-lock.json
-blockchain/contracts/package-lock.json
-
-# Ignore Solidity Hardhat files
-blockchain/contracts/artifacts/
-blockchain/contracts/cache/
-blockchain/contracts/coverage/
-blockchain/contracts/coverage.json
-blockchain/contracts/dist/
-blockchain/contracts/.env
-blockchain/contracts/.env.local
-blockchain/contracts/.env.*.local
-blockchain/blockchain-api/.env
-blockchain/blockchain-api/.env.local
-blockchain/blockchain-api/.env.*.local
-
-# Ignore Python files
-__pycache__/
+# Python
 *.pyc
 *.pyo
 *.pyd
+__pycache__/
+*.env
+.env
+*.venv
+.venv/
 *.egg-info/
-*.eggs/
-dist/
+.eggs/
 build/
+dist/
 
-# Ignore logs
-*.log
-logs/
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Ignore OS-specific files
-.DS_Store
-Thumbs.db
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IPFS and Blockchain
+blockchain/blockchain-api/node_modules/
+blockchain/ipfs-service/node_modules/
+blockchain/contracts/build/
+
+# File Upload API
+file-upload-api/.vs/
+file-upload-api/bin/
+file-upload-api/obj/
+
+# Image Similarity Checker
+image-similarity-checker/image_embeddings.index
+image-similarity-checker/image_metadata.json
+image-similarity-checker/uploaded_images/
+
+# Patent Similarity Checker
+patent-similarity-checker/patent_embeddings.index
+patent-similarity-checker/patent_metadata.json
+patent-similarity-checker/sample-data-set.json
+
+# PDF Similarity Checker
+pdf-similarity-checker/__pycache__/
+
+# Video Similarity Checker
+video-similarity-checker/__pycache__/
+
+# GitHub
+.github/workflows/*.log
