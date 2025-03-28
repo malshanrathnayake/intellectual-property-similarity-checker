@@ -49,14 +49,10 @@ file-upload-api/file-upload-api/bin/
 file-upload-api/file-upload-api/obj/
 
 # Image Similarity Checker
-image-similarity-checker/image_embeddings.index
-image-similarity-checker/image_metadata.json
-image-similarity-checker/uploaded_images/
+image-similarity-checker/__pycache__/
 
 # Patent Similarity Checker
-patent-similarity-checker/patent_embeddings.index
-patent-similarity-checker/patent_metadata.json
-patent-similarity-checker/sample-data-set.json
+patent-similarity-checker/__pycache__/
 
 # PDF Similarity Checker
 pdf-similarity-checker/__pycache__/
