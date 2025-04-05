@@ -1,0 +1,36 @@
+Project: Gutenberg Setup
+
+SETUP PHASE
+
+1. Installed required Python libraries:
+   - gutenbergpy
+
+2. Manually downloaded Gutenberg RDF metadata file:
+   - URL: http://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2
+   - Saved to: C:\Users\MalshanRathnayake\.cache\gutenberg\rdf-files.tar.bz2
+   create folder if it not exist
+	
+3. Created and ran a Python script to build the metadata cache:
+   
+   place rdf-files.tar.bz2 in same directory
+
+   from gutenbergpy.gutenbergcache import GutenbergCache
+   print("Downloading and building the metadata cache (may take a few minutes)...")
+   GutenbergCache.create()
+   print("Done!")
+
+   will create a cach directory with books rdf files. (cache folder)
+
+4. Run build_sqlite_from_local_rdf.py 
+
+   This will create the gutenberg_metadata.sqlite and gutenbergindex.db
+
+5. Test the Setup
+
+   test_gutenbergpy_read_book.py
+
+6. Train model
+
+   train_gutenberg_books.py
+   
+   this will create pdf_metadata.json and pdf_embeddings.index

@@ -80,6 +80,69 @@ namespace file_upload_api.Services
             }
         }
 
+        public async Task<string> GetOwnedNfts(string walletAddress)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"http://localhost:4000/blockchain/tokens/{walletAddress}");
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new ApplicationException("GetOwnedNfts failed: " + content);
+
+                return content;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error retrieving owned NFTs: " + ex.Message, ex);
+            }
+        }
+
+
+        public async Task<string> TransferOwnership(string from, string to, string tokenId)
+        {
+            try
+            {
+                var payload = new
+                {
+                    from,
+                    to,
+                    tokenId
+                };
+
+                var response = await _httpClient.PostAsJsonAsync("http://localhost:4000/blockchain/transfer", payload);
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new ApplicationException("Transfer failed: " + content);
+
+                return content;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Blockchain ownership transfer failed: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<string> GetOwnershipHistory(string tokenId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"http://localhost:4000/blockchain/history/{tokenId}");
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new ApplicationException("GetOwnershipHistory failed: " + content);
+
+                return content;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error retrieving ownership history: " + ex.Message, ex);
+            }
+        }
+
 
         public class IPFSResponse
         {

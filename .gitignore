@@ -23,6 +23,9 @@ __pycache__/
 build/
 dist/
 
+# Gutenberg
+*.rdf
+
 # Node.js
 node_modules/
 npm-debug.log*
@@ -56,6 +59,14 @@ patent-similarity-checker/__pycache__/
 
 # PDF Similarity Checker
 pdf-similarity-checker/__pycache__/
+pdf-similarity-checker/gutenbergpy/cache/
+pdf-similarity-checker/gutenbergpy/cache/epub/
+pdf-similarity-checker/gutenbergpy/texts/
+
+# Ignore large files in PDF Similarity Checker
+pdf-similarity-checker/gutenbergpy/rdf-files.tar.bz2
+pdf-similarity-checker/gutenbergpy/gutenbergindex.db
+pdf-similarity-checker/gutenbergpy/gutenberg_metadata.sqlite
 
 # Video Similarity Checker
 video-similarity-checker/__pycache__/

@@ -41,22 +41,35 @@ def extract_text(pdf_file):
 def upload_and_train():
     try:
         pdf = request.files['pdf']
-        pdf_name = pdf.filename
-
         text = extract_text(pdf)
+
+        # Collect metadata fields from form
+        book_id = 220  # Example book ID, replace with actual logic to generate unique IDs
+        title = request.form.get('title', pdf.filename)
+        author = request.form.get('author', 'Unknown')
+
+        # Encode and normalize
         embedding = model.encode(text)
+        embedding = embedding / np.linalg.norm(embedding)
 
+        # Add to FAISS index
         index.add(np.array([embedding]))
-        metadata.append({"filename": pdf_name})
+        metadata.append({
+            "book_id": book_id,
+            "title": title,
+            "author": author
+        })
 
+        # Save index and updated metadata
         faiss.write_index(index, index_file)
-        with open(metadata_file, 'w') as f:
-            json.dump(metadata, f)
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2)
 
-        return jsonify({"message": "PDF trained successfully."})
+        return jsonify({"message": "Book embedded and stored successfully."})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # Check similarity endpoint
 @app.route('/check_similarity', methods=['POST'])
@@ -69,29 +82,33 @@ def check_similarity():
         num_embeddings = index.ntotal
         if num_embeddings == 0:
             return jsonify({
-                "similar_pdfs": [],
-                "message": "No PDFs in the database to compare against."
+                "similar_books": [],
+                "message": "No books in the database to compare against."
             })
+
+        # Normalize embedding for cosine-like distance (optional but recommended)
+        embedding = embedding / np.linalg.norm(embedding)
 
         k = min(3, num_embeddings)
         distances, indices = index.search(np.array([embedding]), k=k)
 
         results = []
-        seen_files = set()
         for distance, idx in zip(distances[0], indices[0]):
             if 0 <= idx < len(metadata):
-                filename = metadata[idx]['filename']
-                if filename not in seen_files:
-                    results.append({
-                        "filename": filename,
-                        "similarity": float(1 / (1 + distance))
-                    })
-                    seen_files.add(filename)
+                book = metadata[idx]
+                similarity = float(1 / (1 + distance))  # or 1 - distance for cosine
+                results.append({
+                    "book_id": book.get("book_id"),
+                    "title": book.get("title"),
+                    "author": book.get("author"),
+                    "similarity": round(similarity, 4)
+                })
 
-        return jsonify({"similar_pdfs": results})
+        return jsonify({"similar_books": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # Run server
 if __name__ == '__main__':

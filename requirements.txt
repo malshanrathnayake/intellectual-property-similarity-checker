@@ -10,3 +10,6 @@ opencv-python==4.9.0.80
 PyMuPDF==1.23.26
 Pillow==10.3.0
 requests==2.31.0
+nltk==3.8.1
+gutenbergpy==0.0.1
+tqdm==4.66.2

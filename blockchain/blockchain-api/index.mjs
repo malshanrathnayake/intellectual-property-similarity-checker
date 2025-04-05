@@ -82,7 +82,72 @@ app.get('/ipfs/test', async (req, res) => {
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
-  });  
+});  
   
+app.get('/blockchain/tokens/:walletAddress', async (req, res) => {
+  const walletAddress = req.params.walletAddress;
+  const tokenCount = await contract.balanceOf(walletAddress);
+
+  let tokens = [];
+
+  //track the total supply and loop over all tokens safely
+  const maxTokenId = await contract.tokenIdCounter();
+
+  for (let tokenId = 1; tokenId <= maxTokenId; tokenId++) {
+    try {
+      const owner = await contract.ownerOf(tokenId);
+      if (owner.toLowerCase() === walletAddress.toLowerCase()) {
+        const property = await contract.getPropertyDetails(tokenId);
+        tokens.push({
+          tokenId: tokenId.toString(),
+          ipfsHash: property.ipfsHash,
+          owner: property.owner,
+          timestamp: property.timestamp.toString()
+        });
+      }
+    } catch (err) {
+      continue;
+    }
+  }
+
+  res.json(tokens);
+});
+
+
+app.post('/blockchain/transfer', async (req, res) => {
+  const { from, to, tokenId } = req.body;
+
+  try {
+    const tx = await contract.transferProperty(to, tokenId);
+    await tx.wait();
+
+    res.json({ success: true, txHash: tx.hash });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/blockchain/history/:tokenId', async (req, res) => {
+  const tokenId = req.params.tokenId;
+
+  try {
+    const filter = contract.filters.PropertyTransferred(tokenId, null, null);
+    const events = await contract.queryFilter(filter, 0, "latest");
+
+    const history = events.map(event => ({
+      from: event.args.from,
+      to: event.args.to,
+      tokenId: event.args.tokenId.toString(),
+      timestamp: event.args.timestamp.toString(),
+      txHash: event.transactionHash
+    }));
+
+    res.json(history);
+  } catch (error) {
+    console.error("Failed to fetch transfer history:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.listen(4000, () => console.log("Blockchain service running on port 4000"));

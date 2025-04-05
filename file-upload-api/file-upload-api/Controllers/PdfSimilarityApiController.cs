@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
+using System.Net.Http;
 using System.Text.Json;
 
 namespace file_upload_api.Controllers
@@ -80,6 +81,58 @@ namespace file_upload_api.Controllers
                 BlockchainTokenId = tokenId
             });
         }
+
+        [HttpGet("owned-nfts/{walletAddress}")]
+        public async Task<IActionResult> GetOwnedNfts(string walletAddress)
+        {
+            try
+            {
+                var nfts = await _blockchainService.GetOwnedNfts(walletAddress);
+                return Ok(nfts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
+        [HttpPost("transfer")]
+        public async Task<IActionResult> TransferOwnership([FromBody] TransferRequest request)
+        {
+            try
+            {
+                var result = await _blockchainService.TransferOwnership(request.From, request.To, request.TokenId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("history/{tokenId}")]
+        public async Task<IActionResult> GetOwnershipHistory(string tokenId)
+        {
+            try
+            {
+                var history = await _blockchainService.GetOwnershipHistory(tokenId);
+                return Ok(history);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
+        public class TransferRequest
+        {
+            public string From { get; set; }
+            public string To { get; set; }
+            public string TokenId { get; set; }
+        }
+
 
         public class SimilarityResponse
         {
