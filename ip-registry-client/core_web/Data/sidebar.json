@@ -1,0 +1,37 @@
+[
+  {
+    "Title": "Dashboard",
+    "Icon": "cil-speedometer",
+    "Url": "/Dashboard/Landing/Index"
+  },
+  {
+    "Title": "PDF Analyzer",
+    "Icon": "cil-description",
+    "Url": "/Pdf/Landing/Index"
+  },
+  {
+    "Title": "Patent Similarity",
+    "Icon": "cil-file",
+    "Url": "/Patent/Landing/Index"
+  },
+  {
+    "Title": "Video Recognition",
+    "Icon": "cil-video",
+    "Url": "/Video/Landing/Index"
+  },
+  {
+    "Title": "Image Matching",
+    "Icon": "cil-image",
+    "Url": "/Image/Landing/Index"
+  },
+  {
+    "Title": "Profile",
+    "Icon": "cil-user",
+    "Url": "/Profile/User/Index"
+  },
+  {
+    "Title": "Settings",
+    "Icon": "cil-settings",
+    "Url": "/Settings/User/Index"
+  }
+]

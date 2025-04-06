@@ -114,7 +114,6 @@ namespace core_web.Areas.Common.Controllers
 
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

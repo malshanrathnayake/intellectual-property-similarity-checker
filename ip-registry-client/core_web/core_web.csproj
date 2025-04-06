@@ -15,11 +15,12 @@
     <Folder Include="Areas\Pdf\Views\" />
     <Folder Include="Areas\Video\Controllers\" />
     <Folder Include="Areas\Video\Views\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="wwwroot\assetsV1\images\logo\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\assetsV1\assets\.DS_Store" />
-    <None Include="wwwroot\template\v1\assets\.DS_Store" />
   </ItemGroup>
 
   <ItemGroup>

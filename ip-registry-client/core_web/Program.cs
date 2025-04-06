@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Common/Login/Index";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
     });
+
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 var app = builder.Build();
 
