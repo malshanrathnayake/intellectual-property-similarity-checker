@@ -44,12 +44,30 @@ blockchain/blockchain-api/node_modules/
 blockchain/ipfs-service/node_modules/
 blockchain/contracts/build/
 
-# File Upload API
-file-upload-api/.vs/
-file-upload-api/bin/
-file-upload-api/obj/
-file-upload-api/file-upload-api/bin/
-file-upload-api/file-upload-api/obj/
+# Ignore build outputs
+ip-registry-client/bin/
+ip-registry-client/obj/
+
+# Ignore user-specific files
+ip-registry-client/*.user
+ip-registry-client/*.suo
+ip-registry-client/.vs/
+
+# Ignore temporary files
+ip-registry-client/*.log
+ip-registry-client/*.tmp
+
+# Ignore publish outputs
+ip-registry-client/core_web/bin/
+ip-registry-client/core_web/obj/
+ip-registry-client/file-upload-api/bin/
+ip-registry-client/file-upload-api/obj/
+
+# Ignore sensitive configuration files
+ip-registry-client/core_web/appsettings.*.json
+ip-registry-client/core_web/*.config
+ip-registry-client/file-upload-api/appsettings.*.json
+ip-registry-client/file-upload-api/*.config
 
 # Image Similarity Checker
 image-similarity-checker/__pycache__/

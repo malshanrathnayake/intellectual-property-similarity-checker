@@ -1,0 +1,45 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="~/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Decentralized IP Portal</title>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/assetsV1/assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/assetsV1/assets/favicon/favicon-32x32.png">
+    <link rel="manifest" href="~/assetsV1/assets/favicon/manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/assetsV1/vendors/simplebar/css/simplebar.css">
+    <link rel="stylesheet" href="~/assetsV1/css/vendors/simplebar.css">
+
+    <!-- CoreUI CSS -->
+    <link href="~/assetsV1/css/style.css" rel="stylesheet">
+    <link href="~/assetsV1/css/examples.css" rel="stylesheet">
+
+    <script src="~/assetsV1/js/config.js"></script>
+    <script src="~/assetsV1/js/color-modes.js"></script>
+</head>
+<body>
+    @RenderBody()
+
+    <!-- Scripts -->
+    <script src="~/assetsV1/vendors/coreui/coreui/js/coreui.bundle.min.js"></script>
+    <script src="~/assetsV1/vendors/simplebar/js/simplebar.min.js"></script>
+    <script>
+        const header = document.querySelector('header.header');
+        document.addEventListener('scroll', () => {
+          if (header) {
+            header.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+          }
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-group d-block d-md-flex row">
+                    <div class="card col-md-7 p-4 mb-0">
+                        <div class="card-body">
+                            <h1>Login</h1>
+                            <p class="text-body-secondary">Sign in with your wallet</p>
+
+                            <div id="wallet-section">
+                                <button id="connectWallet" class="btn btn-primary w-100">Connect MetaMask</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-md-5 text-white bg-primary py-5">
+                        <div class="card-body text-center">
+                            <div>
+                                <h2>Secure Access</h2>
+                                <p>Sign in with your Ethereum wallet to access the decentralized IP portal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        async function authenticateWithMetaMask() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask!');
+                return;
+            }
+
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const address = accounts[0];
+
+            $.ajax({
+                url: "/Common/Login/GetChallenge",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    domain: window.location.hostname,
+                    chainId: 1,
+                    address: address,
+                    uri: window.location.href
+                }),
+                success: async function (challengeResponse) {
+                    if (!challengeResponse || !challengeResponse.message) {
+                        alert("Failed to retrieve authentication message.");
+                        return;
+                    }
+
+                    const message = challengeResponse.message;
+
+                    const signature = await ethereum.request({
+                        method: "personal_sign",
+                        params: [message, address],
+                    });
+
+                    $.ajax({
+                        url: "/Common/Login/Authenticate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            message: message,
+                            signature: signature,
+                            address: address
+                        }),
+                        success: function (response) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                alert("Unexpected response from server.");
+                            }
+                        },
+                        error: function () {
+                            alert("Authentication failed!");
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Error requesting challenge:", xhr.responseText);
+                    alert("Error requesting challenge!");
+                }
+            });
+        }
+
+        document.getElementById("connectWallet").addEventListener("click", authenticateWithMetaMask);
+    </script>
+}
