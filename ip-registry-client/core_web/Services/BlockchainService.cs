@@ -1,8 +1,7 @@
-﻿using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace file_upload_api.Services
+namespace core_web.Services
 {
     public class BlockchainService
     {
@@ -164,5 +163,4 @@ namespace file_upload_api.Services
             public string TokenId { get; set; }
         }
     }
-
 }

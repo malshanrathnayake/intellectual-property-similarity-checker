@@ -14,7 +14,7 @@ from gutenbergpy.gutenbergcachesettings import GutenbergCacheSettings
 nltk.download('punkt', quiet=True)
 
 # ====== Configuration ======
-BOOK_IDS = [1342,84,2701]  # Pride, Alice, Moby Dick, Sherlock Holmes
+##BOOK_IDS = [1342,84,2701]  # Pride, Alice, Moby Dick, Sherlock Holmes
 EMBEDDING_DIM = 384
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "gutenbergindex.db")
@@ -41,6 +41,13 @@ if not cache:
     raise Exception("Gutenberg metadata cache not found.")
 
 existing_ids = {entry['book_id'] for entry in metadata}
+
+# ========= Extract first 3000 Gutenberg book IDs =========
+print("Fetching first 10 book IDs from metadata...")
+query = "SELECT DISTINCT gutenbergbookid FROM books"
+cursor = cache.native_query(query)
+BOOK_IDS = [row[0] for row in cursor.fetchall()][:10]
+print(f"Selected {len(BOOK_IDS)} books for embedding.")
 
 # ====== Training Loop ======
 for book_id in BOOK_IDS:

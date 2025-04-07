@@ -1,4 +1,7 @@
-﻿@{
+﻿@using core_web.Helpers
+@inject IHtmlHelper Html
+
+@{
     Layout = null;
 }
 
@@ -9,9 +12,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+    <meta name="description" content="IP-Registry">
     <meta name="author" content="Łukasz Holeczek">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+    <meta name="keyword" content="Blockchain, Patent">
     <title>CoreUI Free Bootstrap Admin Template</title>
     <link rel="apple-touch-icon" sizes="57x57" href="~/assetsV1/assets/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="~/assetsV1/assets/favicon/apple-icon-60x60.png">
@@ -44,13 +47,15 @@
 <body>
 
     <!-- sidebar -->
-    @await Component.InvokeAsync("Sidebar")
+    @* @await Component.InvokeAsync("Sidebar") *@
+    @Html.RenderAction("Sidebar", "MainLayoutComponent", new { area = "" })
 
     <!-- main -->
     <div class="wrapper d-flex flex-column min-vh-100">
 
         <!-- header -->
         @await Component.InvokeAsync("Header")
+        @* @Html.RenderAction("Header", "MainLayoutComponent", new { area = "" }) *@
         
         <!-- render body -->
         <div class="body flex-grow-1">
@@ -60,7 +65,8 @@
         </div>
 
         <!-- footer -->
-        @await Component.InvokeAsync("Footer")
+        @* @await Component.InvokeAsync("Footer") *@
+        @Html.RenderAction("Footer", "MainLayoutComponent", new { area = "" })
 
     </div>
 
@@ -81,8 +87,7 @@
     <script src="~/assetsV1/vendors/coreui/chartjs/js/coreui-chartjs.js"></script>
     <script src="~/assetsV1/vendors/coreui/utils/js/index.js"></script>
     <script src="~/assetsV1/js/main.js"></script>
-    <script>
-    </script>
-
+    
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

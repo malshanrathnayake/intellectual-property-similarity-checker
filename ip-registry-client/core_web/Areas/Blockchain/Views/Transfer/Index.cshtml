@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Transfer Ownership";
+    var tokenId = ViewBag.TokenId;
+    var fromAddress = ViewBag.FromAddress;
+}
+
+<div class="container-lg px-4">
+    <h3>Transfer Ownership (Token #@tokenId)</h3>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary(false)
+        </div>
+    }
+
+    <form asp-action="TransferOwnership" asp-controller="Transfer" asp-area="Blockchain" method="post">
+        <input type="hidden" name="tokenId" value="@tokenId" />
+
+        <div class="mb-3">
+            <label class="form-label">From Wallet</label>
+            <input class="form-control" value="@fromAddress" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Recipient Address</label>
+            <input class="form-control" name="toAddress" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Transfer</button>
+        <a asp-action="Index" asp-controller="Wallet" asp-area="Blockchain" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

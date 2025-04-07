@@ -1,3 +1,4 @@
+using core_web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
@@ -16,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+builder.Services.AddSingleton<BlockchainService>();
 
 var app = builder.Build();
 

@@ -66,7 +66,7 @@ namespace file_upload_api.Controllers
             await pdf.CopyToAsync(pdfStream);
             pdfStream.Position = 0; // reset stream
 
-            var ipfsHash = await _blockchainService.UploadToIPFS(pdfStream, pdf.FileName);
+            var ipfsHash = await _blockchainService.UploadToIPFS(pdfStream, pdf.FileName, "Pride and Prejudice", "Austen, Jane");
 
             // User wallet address stored after Moralis Authentication
             //var userWalletAddress = HttpContext.Session.GetString("UserWalletAddress");

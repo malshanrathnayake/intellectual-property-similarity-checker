@@ -1,0 +1,48 @@
+﻿@model List<core_web.Models.TransactionHistoryViewModel>
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Transaction History";
+    var tokenId = ViewBag.TokenId;
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+<div class="container-lg px-4">
+    <h4>Transaction History for Token #@tokenId</h4>
+
+    <table class="table table-striped" id="historyTable">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Timestamp</th>
+                <th>Transaction Hash</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.From</td>
+                    <td>@item.To</td>
+                    <td>@DateTimeOffset.FromUnixTimeSeconds(long.Parse(item.Timestamp)).DateTime.ToLocalTime()</td>
+                    <td>
+                        <a href="https://sepolia.etherscan.io/tx/@item.TxHash" target="_blank">
+                            @item.TxHash.Substring(0, 10)...@item.TxHash.Substring(item.TxHash.Length - 10)
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#historyTable').DataTable();
+        });
+    </script>
+}

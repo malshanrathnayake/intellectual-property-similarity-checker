@@ -11,11 +11,6 @@
     <Folder Include="Areas\Image\Views\" />
     <Folder Include="Areas\Patent\Controllers\" />
     <Folder Include="Areas\Patent\Views\" />
-    <Folder Include="Areas\Pdf\Controllers\" />
-    <Folder Include="Areas\Pdf\Views\" />
-    <Folder Include="Areas\Video\Controllers\" />
-    <Folder Include="Areas\Video\Views\" />
-    <Folder Include="Helpers\" />
     <Folder Include="wwwroot\assetsV1\images\logo\" />
   </ItemGroup>
 

@@ -1,10 +1,12 @@
 import express from 'express';
-import { create } from 'ipfs-http-client';
 import { Wallet, Contract, JsonRpcProvider } from 'ethers';
 import cors from 'cors';
 import fs from 'fs';
 import fileUpload from 'express-fileupload';
 import 'dotenv/config';
+import { create } from 'ipfs-http-client';
+import axios from 'axios';
+import FormData from 'form-data';
 
 const app = express();
 app.use(express.json());
@@ -15,9 +17,12 @@ app.use(fileUpload());
 // const ipfs = create({ url: 'https://ipfs.infura.io:5001/api/v0' });
 
 const ipfs = create({
-  host: '127.0.0.1',
-  port: 5001,
-  protocol: 'http'
+  host: 'api.pinata.cloud',
+  port: 443,
+  protocol: 'https',
+  headers: {
+    Authorization: `Bearer ${process.env.PINATA_JWT}`
+  }
 });
 
 
@@ -44,10 +49,54 @@ const contract = new Contract(contractAddress, contractABI, wallet);
 
 // IPFS upload route
 app.post('/ipfs/upload', async (req, res) => {
-    const fileBuffer = req.files.file.data; // Use file upload middleware (express-fileupload or multer)
-    const result = await ipfs.add(fileBuffer);
-    res.json({ hash: result.path });
+  try {
+    if (!req.files || !req.files.file) {
+      return res.status(400).json({ error: 'File is missing in the request.' });
+    }
+
+    const fileBuffer = req.files.file.data;
+    const { title, author } = req.body;
+
+    // Upload the file to Pinata
+    const formData = new FormData();
+    formData.append('file', fileBuffer, {
+      filename: req.files.file.name
+    });
+
+    const fileUploadRes = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
+      maxBodyLength: Infinity,
+      headers: {
+        ...formData.getHeaders(),
+        Authorization: `Bearer ${process.env.PINATA_JWT}`
+      }
+    });
+
+    const fileHash = fileUploadRes.data.IpfsHash;
+
+    // upload metadata
+    const metadata = {
+      title,
+      author,
+      file: `ipfs://${fileHash}`
+    };
+
+    const metaUploadRes = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', metadata, {
+      headers: {
+        Authorization: `Bearer ${process.env.PINATA_JWT}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const metaHash = metaUploadRes.data.IpfsHash;
+
+    res.json({ hash: metaHash });
+  } catch (error) {
+    console.error("Upload failed:", error?.response?.data || error.message);
+    res.status(500).json({ error: error?.message || 'IPFS upload failed.' });
+  }
 });
+
+
 
 // Blockchain registration route
 app.post('/blockchain/register', async (req, res) => {
@@ -56,13 +105,13 @@ app.post('/blockchain/register', async (req, res) => {
     try {
         // Correctly pass the walletAddress as the `owner` param
         const tx = await contract.registerProperty(ipfsHash, walletAddress);
-        console.log("📤 Transaction sent:", tx.hash);
+        console.log("Transaction sent:", tx.hash);
 
         await tx.wait();
 
         // Get latest tokenId
         const tokenId = await contract.tokenIdCounter();
-        console.log("📤 Token:", tokenId.toString());
+        console.log("Token:", tokenId.toString());
         res.json({ tokenId: tokenId.toString() });
 
     } catch (error) {

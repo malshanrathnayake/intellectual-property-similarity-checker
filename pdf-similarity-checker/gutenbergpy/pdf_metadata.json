@@ -13,5 +13,45 @@
     "book_id": 2701,
     "title": "Moby Dick; Or, The Whale",
     "author": "Melville, Hermann"
+  },
+  {
+    "book_id": 1,
+    "title": "The Declaration of Independence of the United States of America",
+    "author": "United States President (1801-1809)"
+  },
+  {
+    "book_id": 2,
+    "title": "The United States Bill of Rights\r\nThe Ten Original Amendments to the Constitution of the United States",
+    "author": "U.S.A."
+  },
+  {
+    "book_id": 3,
+    "title": "John F. Kennedy's Inaugural Address",
+    "author": "United States President (1961-1963)"
+  },
+  {
+    "book_id": 4,
+    "title": "Lincoln's Gettysburg Address\r\nGiven November 19, 1863 on the battlefield near Gettysburg, Pennsylvania, USA",
+    "author": "United States President (1861-1865)"
+  },
+  {
+    "book_id": 5,
+    "title": "The United States Constitution",
+    "author": "U.S.A."
+  },
+  {
+    "book_id": 6,
+    "title": "Give Me Liberty or Give Me Death",
+    "author": "Henry, Patrick"
+  },
+  {
+    "book_id": 8,
+    "title": "Abraham Lincoln's Second Inaugural Address",
+    "author": "United States President (1861-1865)"
+  },
+  {
+    "book_id": 9,
+    "title": "Abraham Lincoln's First Inaugural Address",
+    "author": "United States President (1861-1865)"
   }
 ]

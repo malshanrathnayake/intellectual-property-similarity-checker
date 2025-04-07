@@ -1,0 +1,27 @@
+﻿@model List<core_web.Models.NFTViewModel>
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "My Wallet";
+    var wallet = ViewBag.Wallet as string;
+}
+<div class="container-lg px-4">
+    <h3>Wallet: <code>@wallet</code></h3>
+    <div class="row">
+        @foreach (var nft in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Token #@nft.TokenId</h5>
+                        <p><strong>Owner:</strong> @nft.Owner</p>
+                        <p><strong>IPFS Hash:</strong> <code>@nft.IpfsHash</code></p>
+                        <p><strong>Minted:</strong> @DateTimeOffset.FromUnixTimeSeconds(long.Parse(nft.Timestamp)).DateTime.ToLocalTime()</p>
+                        <a class="btn btn-primary btn-sm" href="https://ipfs.io/ipfs/@nft.IpfsHash" target="_blank">View on IPFS</a>
+                        <a class="btn btn-secondary btn-sm" asp-action="TransactionHistory" asp-route-tokenId="@nft.TokenId">View History</a>
+                        <a class="btn btn-secondary btn-sm" asp-action="Index" asp-controller="Transfer" asp-area="Blockchain" asp-route-tokenId="@nft.TokenId">Transfer</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
