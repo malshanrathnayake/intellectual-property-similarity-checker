@@ -1,0 +1,9 @@
+fastapi==0.110.0
+uvicorn==0.29.0
+sentence-transformers==2.2.2
+faiss-cpu==1.7.4
+PyMuPDF==1.23.17
+pytesseract==0.3.10
+pdf2image==1.17.0
+web3==5.31.4
+python-dotenv==1.0.1
