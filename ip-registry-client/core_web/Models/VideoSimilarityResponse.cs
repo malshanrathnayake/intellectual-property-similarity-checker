@@ -11,7 +11,10 @@ namespace core_web.Models
 
     public class SimilarVideo
     {
+        [JsonPropertyName("filename")]
         public string Filename { get; set; }
+
+        [JsonPropertyName("similarity")]
         public double Similarity { get; set; }
     }
 }

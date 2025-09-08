@@ -13,28 +13,57 @@ namespace file_upload_api.Controllers
         [HttpPost("train-video")]
         public async Task<IActionResult> TrainVideo(IFormFile video)
         {
-            var request = new RestRequest("/upload_and_train_video", Method.Post);
+            using var httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(10)
+            };
 
-            await using var ms = new MemoryStream();
-            await video.CopyToAsync(ms);
-            request.AddFile("video", ms.ToArray(), video.FileName, "video/mp4");
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(video.OpenReadStream());
+            streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
 
-            var response = await client.ExecuteAsync(request);
-            return response.IsSuccessful ? Ok(response.Content) : StatusCode(500, response.Content);
+            content.Add(streamContent, "video", video.FileName);
+
+            var response = await httpClient.PostAsync("http://localhost:6000/upload_and_train_video", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return Ok(responseContent);
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            return StatusCode((int)response.StatusCode, errorContent);
         }
+
 
         [HttpPost("check-video")]
         public async Task<IActionResult> CheckVideo(IFormFile video)
         {
-            var request = new RestRequest("/check_video_similarity", Method.Post);
+            using var httpClient = new HttpClient()
+            {
+                Timeout = TimeSpan.FromMinutes(10) //Increase timeout 
+            };
+            using var content = new MultipartFormDataContent();
 
-            await using var ms = new MemoryStream();
-            await video.CopyToAsync(ms);
-            request.AddFile("video", ms.ToArray(), video.FileName, "video/mp4");
+            var videoStream = video.OpenReadStream();
+            var streamContent = new StreamContent(videoStream);
+            streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
 
-            var response = await client.ExecuteAsync(request);
-            return response.IsSuccessful ? Ok(response.Content) : StatusCode(500, response.Content);
+            content.Add(streamContent, "video", video.FileName);
+
+            var response = await httpClient.PostAsync("http://localhost:6000/check_video_similarity", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return Ok(responseContent);
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            return StatusCode((int)response.StatusCode, errorContent);
         }
+
 
     }
 }
