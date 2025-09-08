@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+venv310/
+
+# VSCode settings (optional if you don't want to share them)
+.vscode/
+
+# Environment files
+.env
+
+# FAISS cache and embeddings
+cache/
+*.npy
+*.index
+
+# Patent data and sensitive info
+patents.json
+example-patent.pdf
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# FastAPI static files (if you add later)
+static/
