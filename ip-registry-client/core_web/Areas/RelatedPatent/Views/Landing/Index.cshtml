@@ -1,0 +1,79 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Related Patent Discovery";
+}
+
+@section Scripts {
+    <script src="~/assetsV1/js/related-patent.js"></script>
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Upload Patent PDF</h5>
+        </div>
+        <div class="card-body">
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="pdfFile" class="form-label">Select PDF File</label>
+                    <input class="form-control" type="file" id="pdfFile" name="file" accept=".pdf" required />
+                </div>
+                <button type="submit" class="btn btn-primary" id="extractBtn">
+                    <i class="cil-search"></i> Extract & Check Similarity
+                </button>
+            </form>
+
+            <!-- Spinner -->
+            <div id="loadingSpinner" class="text-center mt-3 d-none">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Processing...</span>
+                </div>
+            </div>
+
+            <!-- Extracted Content -->
+            <div id="extractedContent" class="mt-4 d-none">
+                <h6>Extracted Content</h6>
+                <p><strong>Title:</strong> <span id="titleText"></span></p>
+                <p>
+                    <strong>Abstract:</strong>
+                    <span id="abstractTextShort"></span>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#fullAbstract">Show More</a>
+                </p>
+                <div class="collapse" id="fullAbstract">
+                    <p id="abstractTextFull"></p>
+                </div>
+
+                <p>
+                    <strong>Claims:</strong>
+                    <span id="claimsTextShort"></span>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#fullClaims">Show More</a>
+                </p>
+                <div class="collapse" id="fullClaims">
+                    <p id="claimsTextFull"></p>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
+
+            <!-- Rejected -->
+            <div id="rejectionDetails" class="alert alert-danger mt-4 d-none">
+                <h6 class="mb-2">Patent Rejected</h6>
+                <p>Semantically similar patents found:</p>
+                <div id="similarResultsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index: 1080;"></div>
+</div>
+<!-- Approved Patents Section -->
+<div class="card mt-5">
+    <div class="card-header">
+        <h5>Recently Approved Patents</h5>
+    </div>
+    <div class="card-body">
+        <div id="approvedPatentsList"></div>
+    </div>
+</div>

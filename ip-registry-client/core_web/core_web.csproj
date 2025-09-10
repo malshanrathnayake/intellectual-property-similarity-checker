@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\assetsV1\js\related-patent.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\assetsV1\js\related-patent.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Areas\Image\Controllers\" />
     <Folder Include="Areas\Image\Views\" />
     <Folder Include="Areas\Patent\Controllers\" />
@@ -16,6 +24,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\assetsV1\assets\.DS_Store" />
+    <None Include="wwwroot\assetsV1\js\related-patent.js" />
   </ItemGroup>
 
   <ItemGroup>
