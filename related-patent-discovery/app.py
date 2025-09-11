@@ -6,7 +6,7 @@ import faiss
 import numpy as np
 import json
 from blockchain_service import get_cid_from_blockchain, store_cid_on_blockchain
-from ipfs_uploader import upload_json_to_pinata
+from ipfs_uploader import upload_json_to_pinata, upload_file_to_pinata
 from utils.pdf_extractor import extract_patent_sections
 from utils.embed_utils import append_to_embeddings, save_faiss_index
 import fitz
@@ -144,18 +144,21 @@ async def register_patent_pdf(file: UploadFile = File(...), threshold: float = 0
                 "similar": similar
             }
 
+        pdf_cid = upload_file_to_pinata(file_bytes, file.filename)
         new_patent = {
             "id": len(patent_data) + 1,
             "title": title,
             "abstract": abstract,
-            "claims": claims
+            "claims": claims,
+            "pdf_cid": pdf_cid  # optional but helpful
         }
 
-        cid = upload_json_to_pinata(new_patent, file.filename)
-        if not cid:
+        metadata_cid = upload_json_to_pinata(new_patent, file.filename + "_meta.json")
+        
+        if not metadata_cid:
             return {"success": False, "message": "Failed to upload to IPFS."}
 
-        tx_hash = store_cid_on_blockchain(new_patent["id"], cid)
+        tx_hash = store_cid_on_blockchain(new_patent["id"], metadata_cid)
         if not tx_hash:
             return {"success": False, "message": "CID uploaded but storing to blockchain failed."}
 
@@ -173,7 +176,8 @@ async def register_patent_pdf(file: UploadFile = File(...), threshold: float = 0
             "status": "approved",
             "source": source,
             "message": "Patent registered and stored on IPFS and blockchain.",
-            "cid": cid,
+            "metadata_cid": metadata_cid,
+            "pdf_cid": pdf_cid,
             "tx_hash": tx_hash,
             "faiss_distances": [float(round(d, 4)) for d in distances[0]],
             "extracted": {
@@ -197,7 +201,8 @@ def get_recent_patents(limit: int = 10):
             "title": p["title"],
             "abstract": p.get("abstract", ""),
             "claims": p.get("claims", []), 
-            "cid": cid
+            "cid": cid,
+            "pdf_cid": p.get("pdf_cid")
         })
     return {"patents": results}
 

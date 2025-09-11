@@ -5,6 +5,7 @@
     const errorBox = document.getElementById("errorMessage");
     const rejectionBox = document.getElementById("rejectionDetails");
     const rejectionList = document.getElementById("similarResultsList");
+
     loadApprovedPatents();
 
     form.addEventListener("submit", async function (e) {
@@ -31,34 +32,31 @@
             });
 
             const data = await response.json();
+            spinner.classList.add("d-none");
 
             if (data.success && data.extracted) {
-                // ✅ Show extracted content
                 document.getElementById("titleText").innerText = data.extracted.title || "N/A";
-                document.getElementById("abstractTextShort").innerText = data.extracted.abstract.slice(0, 300) + "...";
-                document.getElementById("abstractTextFull").innerText = data.extracted.abstract;
-                let fullClaims = data.extracted.claims || "N/A";
 
-                // If it's an array, join it into a single string
-                if (Array.isArray(fullClaims)) {
-                    fullClaims = fullClaims.join(" ");
-                }
+                const abstract = data.extracted.abstract || "N/A";
+                const claims = Array.isArray(data.extracted.claims)
+                    ? data.extracted.claims.join(" ")
+                    : data.extracted.claims || "N/A";
 
-                // Proceed with intelligent truncation
-                const claimSentences = fullClaims.split(/[.?!]\s+/);
-                const shortClaims = claimSentences.slice(0, 2).join('. ') + '...';
+                const abstractHtml = renderToggleText(abstract, "dynamicAbstract");
+                const claimsHtml = renderToggleText(claims, "dynamicClaims");
 
-                document.getElementById("claimsTextShort").innerText = shortClaims;
-                document.getElementById("claimsTextFull").innerText = fullClaims;
-
+                document.getElementById("abstractToggleContainer").innerHTML = abstractHtml;
+                document.getElementById("claimsToggleContainer").innerHTML = claimsHtml;
 
                 extracted.classList.remove("d-none");
 
-                // ✅ Toast notification
                 showToast("Patent approved and stored on IPFS + Blockchain", "success");
+
+                rejectionBox.classList.add("d-none");
+                rejectionList.innerHTML = "";
+
                 loadApprovedPatents();
-            } else if (data.status === "rejected" && data.similar) {
-                // ❌ Show rejected reason and similar results
+            } else if (!data.success && data.status === "rejected" && data.similar) {
                 rejectionBox.classList.remove("d-none");
 
                 data.similar.forEach((item, index) => {
@@ -90,12 +88,33 @@
                 throw new Error(data.message || "Extraction failed.");
             }
         } catch (err) {
+            spinner.classList.add("d-none");
             errorBox.innerText = err.message;
             errorBox.classList.remove("d-none");
-        } finally {
-            spinner.classList.add("d-none");
         }
     });
+
+    function renderToggleText(fullText, containerId, threshold = 300) {
+        const shortText = fullText.length > threshold ? fullText.slice(0, threshold) + "..." : fullText;
+        const uid = `${containerId}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+        if (fullText.length <= threshold) return `<p>${fullText}</p>`;
+
+        return `
+            <p id="${uid}-short">${shortText}
+                <a href="#" onclick="toggleText('${uid}', true); return false;" class="ms-2">Show More</a>
+            </p>
+            <p id="${uid}-full" style="display: none;">
+                ${fullText}
+                <a href="#" onclick="toggleText('${uid}', false); return false;" class="ms-2">Show Less</a>
+            </p>
+        `;
+    }
+
+    window.toggleText = function (uid, showFull) {
+        document.getElementById(`${uid}-short`).style.display = showFull ? "none" : "block";
+        document.getElementById(`${uid}-full`).style.display = showFull ? "block" : "none";
+    };
 
     function showToast(message, type = "info") {
         const toastId = `toast-${Date.now()}`;
@@ -113,8 +132,7 @@
         const toastContainer = document.getElementById("toastContainer");
         toastContainer.insertAdjacentHTML("beforeend", toastHtml);
 
-        const toastElement = new bootstrap.Toast(document.getElementById(toastId), { delay: 5000 });
-        toastElement.show();
+        new bootstrap.Toast(document.getElementById(toastId), { delay: 5000 }).show();
     }
 
     async function loadApprovedPatents() {
@@ -126,10 +144,11 @@
             container.innerHTML = "";
 
             data.patents.forEach((item, index) => {
-                const shortAbstract = item.abstract.slice(0, 250) + "...";
-                const shortClaims = Array.isArray(item.claims)
-                    ? item.claims.slice(0, 2).join(" ") + "..."
-                    : item.claims.slice(0, 250) + "...";
+                const abstractHtml = renderToggleText(item.abstract, `approvedAbstract${index}`);
+                const claimsHtml = renderToggleText(
+                    Array.isArray(item.claims) ? item.claims.join(" ") : item.claims,
+                    `approvedClaims${index}`
+                );
 
                 const html = `
                 <div class="card mb-3">
@@ -138,18 +157,21 @@
                         <span><strong>Title:</strong> ${item.title}</span>
                     </div>
                     <div class="card-body">
-                        <p><strong>Abstract:</strong> ${shortAbstract}</p>
-                        <p><strong>Claims:</strong> ${shortClaims}</p>
-                        <a href="https://gateway.pinata.cloud/ipfs/${item.cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
-                        <a href="https://gateway.pinata.cloud/ipfs/${item.cid}?download=true" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
+                        <p><strong>Abstract:</strong><br>${abstractHtml}</p>
+                        <p><strong>Claims:</strong><br>${claimsHtml}</p>
+                        ${item.pdf_cid ? `
+                            <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
+                            <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}?download=true" class="btn btn-sm btn-outline-success" download>Download</a>
+                        ` : `
+                            <a href="https://gateway.pinata.cloud/ipfs/${item.cid}" target="_blank" class="btn btn-sm btn-outline-info">View Metadata</a>
+                        `}
                     </div>
                 </div>
-            `;
+                `;
                 container.insertAdjacentHTML("beforeend", html);
             });
         } catch (err) {
             console.error("❌ Error loading registered patents:", err);
         }
     }
-
 });

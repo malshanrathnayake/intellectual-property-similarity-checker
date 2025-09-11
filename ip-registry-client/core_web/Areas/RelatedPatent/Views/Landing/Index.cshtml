@@ -34,23 +34,10 @@
             <div id="extractedContent" class="mt-4 d-none">
                 <h6>Extracted Content</h6>
                 <p><strong>Title:</strong> <span id="titleText"></span></p>
-                <p>
-                    <strong>Abstract:</strong>
-                    <span id="abstractTextShort"></span>
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#fullAbstract">Show More</a>
-                </p>
-                <div class="collapse" id="fullAbstract">
-                    <p id="abstractTextFull"></p>
-                </div>
-
-                <p>
-                    <strong>Claims:</strong>
-                    <span id="claimsTextShort"></span>
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#fullClaims">Show More</a>
-                </p>
-                <div class="collapse" id="fullClaims">
-                    <p id="claimsTextFull"></p>
-                </div>
+                <p><strong>Abstract:</strong></p>
+                <div id="abstractToggleContainer"></div>
+                <p><strong>Claims:</strong></p>
+                <div id="claimsToggleContainer"></div>
             </div>
 
             <!-- Error -->
@@ -68,6 +55,7 @@
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index: 1080;"></div>
 </div>
+
 <!-- Approved Patents Section -->
 <div class="card mt-5">
     <div class="card-header">

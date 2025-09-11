@@ -43,6 +43,21 @@
     <script src="~/assetsV1/js/config.js"></script>
     <script src="~/assetsV1/js/color-modes.js"></script>
     <link href="~/assetsV1/vendors/coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+    <style>
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 9999; /* ⬅️ Make sure it's on top of all UI elements */
+            transition: opacity 0.2s ease-in-out;
+        }
+    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
 
@@ -87,6 +102,7 @@
     <script src="~/assetsV1/vendors/coreui/chartjs/js/coreui-chartjs.js"></script>
     <script src="~/assetsV1/vendors/coreui/utils/js/index.js"></script>
     <script src="~/assetsV1/js/main.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     @RenderSection("Scripts", required: false)
