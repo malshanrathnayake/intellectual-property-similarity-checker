@@ -133,7 +133,8 @@ async def register_patent_pdf(file: UploadFile = File(...), threshold: float = 0
                     "id": matched["id"],
                     "title": matched["title"],
                     "faiss_distance": float(round(d, 4)),
-                    "cid": cid
+                    "cid": cid,
+                    "pdf_cid": matched.get("pdf_cid")
                 })
 
         if similar:

@@ -61,7 +61,6 @@
 
                 data.similar.forEach((item, index) => {
                     const collapseId = `collapse${index}`;
-                    const hasCid = !!item.cid;
                     const html = `
                         <div class="card mb-2">
                             <div class="card-header d-flex justify-content-between align-items-center">
@@ -74,10 +73,15 @@
                                 <div class="card-body">
                                     <p><strong>Title:</strong> ${item.title}</p>
                                     <p><strong>Distance:</strong> ${item.faiss_distance}</p>
-                                    ${hasCid ? `
-                                        <a href="https://gateway.pinata.cloud/ipfs/${item.cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
-                                        <a href="https://gateway.pinata.cloud/ipfs/${item.cid}?download=true" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
-                                    ` : `<span class="text-muted">No CID available</span>`}
+                                    ${item.pdf_cid ? `
+                                        <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
+                                        <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}?download=true" target="_blank" class="btn btn-sm btn-outline-success">Download</a>
+                                    ` : item.cid ? `
+                                        <a href="https://gateway.pinata.cloud/ipfs/${item.cid}" target="_blank" class="btn btn-sm btn-outline-info">View Metadata</a>
+                                    ` : `
+                                        <span class="text-muted">No CID available</span>
+                                    `}
+
                                 </div>
                             </div>
                         </div>
