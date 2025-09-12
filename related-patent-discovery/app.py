@@ -128,7 +128,7 @@ async def register_patent_pdf(file: UploadFile = File(...), threshold: float = 0
         for d, i in zip(distances[0], indices[0]):
             if d < threshold:
                 matched = patent_data[i]
-                cid = get_cid_from_blockchain(matched["id"])  # fetch CID for rejected ones testt
+                cid = get_cid_from_blockchain(matched["id"])  # fetch CID for rejected ones test
                 similar.append({
                     "id": matched["id"],
                     "title": matched["title"],

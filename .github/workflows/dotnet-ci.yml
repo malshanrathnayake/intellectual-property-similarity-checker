@@ -22,10 +22,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore ./ip-registry-client/ip-registry-client.csproj
+      run: dotnet restore ./ip-registry-client/core_web/core_web.csproj
 
     - name: Build
-      run: dotnet build ./ip-registry-client/ip-registry-client.csproj --no-restore --configuration Release
+      run: dotnet build ./ip-registry-client/core_web/core_web.csproj --no-restore --configuration Release
 
     - name: Run Tests (optional)
       run: echo "🧪 Add unit tests later with dotnet test"
