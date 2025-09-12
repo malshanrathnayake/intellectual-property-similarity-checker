@@ -139,5 +139,10 @@ pip install -r requirements.txt
 uvicorn app:app --reload
 ```
 
+## CI Status
+
+- Python Component (related-patent-discovery): ![Python CI](https://github.com/malshanrathnayake/intellectual-property-similarity-checker/actions/workflows/python-ci.yml/badge.svg)
+- ASP.NET Core Client (ip-registry-client): ![.NET CI](https://github.com/malshanrathnayake/intellectual-property-similarity-checker/actions/workflows/dotnet-ci.yml/badge.svg)
+
 ### License
 This project is licensed under the MIT License. See the LICENSE file for details.
