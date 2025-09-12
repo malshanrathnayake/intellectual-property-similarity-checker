@@ -29,3 +29,19 @@ def upload_json_to_pinata(patent_json: dict, filename="patent.json") -> str:
         return ipfs_hash
     else:
         raise Exception(f"IPFS upload failed: {response.text}")
+
+def upload_file_to_pinata(file_bytes: bytes, filename: str) -> str:
+    url = "https://api.pinata.cloud/pinning/pinFileToIPFS"
+    headers = {
+        "pinata_api_key": PINATA_API_KEY,
+        "pinata_secret_api_key": PINATA_SECRET_API_KEY
+    }
+    files = {
+        'file': (filename, file_bytes)
+    }
+    response = requests.post(url, files=files, headers=headers)
+    if response.status_code == 200:
+        return response.json()["IpfsHash"]
+    else:
+        raise Exception(f"PDF IPFS upload failed: {response.text}")
+
