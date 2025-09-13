@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Pricing Plans";
+}
+
+<div class="container mt-4">
+
+    <!-- First Row: Basic, Pro, Enterprise -->
+    <div class="row g-4 justify-content-center">
+        <!-- Basic Plan -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm d-flex flex-column basic-card transition">
+                <div class="card-header text-center bg-secondary text-white">
+                    <h4 class="mb-0">Basic</h4>
+                </div>
+                <div class="card-body text-center d-flex flex-column">
+                    <h3 class="fw-bold">$15 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled flex-grow-1 mt-3 mb-4 text-start">
+                        <li>✔ 10 Similarity Checks / month</li>
+                        <li>✔ 500 Blockchain Credits / month</li>
+                        <li>✔ Access to all core features</li>
+                        <li>✔ Credits renew monthly</li>
+                        <li>⚠ Must wait until next month once checks are used</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-primary mt-auto">Choose Basic</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm d-flex flex-column pro-card border-primary transition">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4 class="mb-0">Pro</h4>
+                </div>
+                <div class="card-body text-center d-flex flex-column">
+                    <h3 class="fw-bold">$40 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled flex-grow-1 mt-3 mb-4 text-start">
+                        <li>✔ Unlimited Similarity Checks</li>
+                        <li>✔ 1500 Blockchain Credits / month</li>
+                        <li>✔ Priority processing & extended history</li>
+                        <li>✔ Credits renew monthly</li>
+                        <li>➕ Additional credits can be purchased</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary mt-auto">Choose Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm d-flex flex-column enterprise-card transition">
+                <div class="card-header text-center bg-dark text-white">
+                    <h4 class="mb-0">Enterprise</h4>
+                </div>
+                <div class="card-body text-center d-flex flex-column">
+                    <h3 class="fw-bold">Starting at $199 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled flex-grow-1 mt-3 mb-4 text-start">
+                        <li>✔ Unlimited Similarity Checks</li>
+                        <li>✔ 5000+ Blockchain Credits / month</li>
+                        <li>✔ Multi-user support</li>
+                        <li>✔ Dedicated enterprise features</li>
+                        <li>➕ Extra credits available</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-light mt-auto">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Blockchain Top-Ups -->
+    <div class="row g-4 justify-content-center mt-4 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm d-flex flex-column topup-card transition">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0">🔄 Blockchain Credit Top-Ups</h4>
+                </div>
+                <div class="card-body d-flex flex-column text-center">
+                    <p class="flex-grow-1">Buy extra blockchain credits anytime within the month.</p>
+                    <ul class="list-group list-group-flush flex-grow-1 text-start">
+                        <li class="list-group-item">💵 $10 → 650 credits</li>
+                        <li class="list-group-item">💵 $20 → 1400 credits</li>
+                        <li class="list-group-item">💵 Custom bundles for enterprises</li>
+                    </ul>
+                    <a href="#" class="btn btn-success mt-auto">Buy Credits</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Smooth hover */
+        .card.transition {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+            .card.transition:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.15);
+            }
+
+        /* Hover colors */
+        .basic-card:hover .card-header {
+            background-color: #0dcaf0 !important; /* info */
+            color: #fff !important;
+        }
+
+        .pro-card:hover .card-header {
+            background-color: #6610f2 !important; /* indigo */
+            color: #fff !important;
+        }
+
+        .enterprise-card:hover .card-header {
+            background-color: #198754 !important; /* success */
+            color: #fff !important;
+        }
+
+        .topup-card:hover .card-header {
+            background-color: #20c997 !important; /* teal */
+            color: #fff !important;
+        }
+    </style>
+}
