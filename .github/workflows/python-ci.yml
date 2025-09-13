@@ -39,7 +39,7 @@ jobs:
         pip install -r requirements-py310.txt
 
     - name: Replace patents.json with mock
-      run: cp related-patent-discovery/tests/patents_mock.json related-patent-discovery/patents.json
+      run: cp tests/patents_mock.json patents.json
 
     - name: Run unit tests with coverage
       env:
