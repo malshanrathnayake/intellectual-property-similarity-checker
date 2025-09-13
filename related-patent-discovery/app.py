@@ -34,12 +34,17 @@ INDEX_PATH = "cache/faiss.index"
 
 IS_CI = os.getenv("CI") == "true"
 
-if not IS_CI:
+if IS_CI:
+    # Mock index and embeddings for test environment
+    embeddings = np.array([[0.0] * 768])  # dummy embedding
+    index = faiss.IndexFlatL2(768)
+    index.add(embeddings)
+else:
     if not os.path.exists(EMBED_PATH) or not os.path.exists(INDEX_PATH):
         raise RuntimeError("Cached FAISS index or embeddings not found. Run tools/rebuild_faiss_index.py first.")
-
-embeddings = np.load(EMBED_PATH)
-index = faiss.read_index(INDEX_PATH)
+    
+    embeddings = np.load(EMBED_PATH)
+    index = faiss.read_index(INDEX_PATH)
 
 @app.get("/search")
 def search_patents(query: str = Query(...), top_k: int = 5, threshold: float = 1.0):
