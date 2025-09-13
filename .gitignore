@@ -101,3 +101,6 @@ video-similarity-checker/__pycache__/
 
 coverage.xml
 .coverage
+
+patents_bkup.json
+patents.json
