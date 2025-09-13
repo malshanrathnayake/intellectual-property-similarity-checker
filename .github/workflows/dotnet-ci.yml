@@ -27,5 +27,5 @@ jobs:
     - name: Build
       run: dotnet build ./ip-registry-client/core_web/core_web.csproj --no-restore --configuration Release
 
-    - name: Run Tests (optional)
-      run: echo "🧪 Add unit tests later with dotnet test"
+    - name: Run tests
+      run: dotnet test ./ip-registry-client/ip-registry-client.sln --no-build --configuration Release --logger "trx"

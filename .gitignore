@@ -91,3 +91,13 @@ video-similarity-checker/__pycache__/
 
 # GitHub
 .github/workflows/*.log
+
+# Ignore build artifacts
+**/bin/
+**/obj/
+**/*.nuget.g.props
+**/*.nuget.g.targets
+**/*.nuget.dgspec.json
+
+coverage.xml
+.coverage
