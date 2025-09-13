@@ -30,6 +30,10 @@
     "Children": [
       {
         "Title": "Wallet",
+        "Url": "/Blockchain/Dashboard/Index"
+      },
+      {
+        "Title": "Wallet",
         "Url": "/Blockchain/Wallet/Index"
       },
       {

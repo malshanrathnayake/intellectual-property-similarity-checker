@@ -1,0 +1,247 @@
+﻿@model core_web.Models.Wallet.DashboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Wallet Dashboard";
+}
+
+<div class="container mt-4">
+
+    <!-- Wallet Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Wallet Overview</div>
+                <div class="card-body">
+                    <p><strong>Address:</strong> @Model.Address</p>
+                    <p><strong>Total Net Worth (USD):</strong> @Model.NetWorth?.Total_Networth_Usd</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary text-center">
+                <div class="card-body">
+                    <h5>NFTs</h5>
+                    <h2>@Model.Stats?.Nfts</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info text-center">
+                <div class="card-body">
+                    <h5>Collections</h5>
+                    <h2>@Model.Stats?.Collections</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success text-center">
+                <div class="card-body">
+                    <h5>Transactions</h5>
+                    <h2>@Model.Stats?.Transactions?.Total</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning text-center">
+                <div class="card-body">
+                    <h5>Token Transfers</h5>
+                    <h2>@Model.Stats?.Token_Transfers?.Total</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Token Balances</div>
+                <div class="card-body">
+                    <div id="tokenBalancesChart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Transaction Distribution</div>
+                <div class="card-body">
+                    <div id="txChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DataTables -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">NFTs</div>
+                <div class="card-body">
+                    <table id="nftTable" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Token ID</th>
+                                <th>Name</th>
+                                <th>Symbol</th>
+                                <th>Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var nft in Model.NFTs?.Result ?? new List<core_web.Services.NftOwned>())
+                            {
+                                <tr>
+                                    <td>@nft.Token_Id</td>
+                                    <td>@nft.Name</td>
+                                    <td>@nft.Symbol</td>
+                                    <td>@nft.Owner_Of</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">Recent Transactions</div>
+                <div class="card-body">
+                    <table id="txTable" class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Hash</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Value</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tx in Model.Transactions?.Result ?? new List<core_web.Services.Transaction>())
+                            {
+                                var valueEth = decimal.Parse(tx.Value) / (decimal)Math.Pow(10, 18);
+
+                                <tr>
+                                    <td><a href="https://sepolia.etherscan.io/tx/@tx.Hash" target="_blank">@tx.Hash.Substring(0, 10)...</a></td>
+                                    <td>@tx.From_Address</td>
+                                    <td>@tx.To_Address</td>
+                                    <td>@valueEth.ToString("0.####") ETH</td>
+                                    <td>@tx.Block_Timestamp.ToString("yyyy-MM-dd")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Transfers -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">ERC-20 Token Transfers</div>
+                <div class="card-body">
+                    <table id="tokenTransferTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Token</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Amount</th>
+                                <th>Tx Hash</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model.TokenTransfers?.Result ?? new List<core_web.Services.TokenTransfer>())
+                            {
+                                <tr>
+                                    <td>@t.Block_Timestamp.ToString("yyyy-MM-dd")</td>
+                                    <td>@t.Token_Symbol</td>
+                                    <td>@t.From_Address</td>
+                                    <td>@t.To_Address</td>
+                                    <td>@t.Value_Decimal</td>
+                                    <td><a href="https://sepolia.etherscan.io/tx/@t.Transaction_Hash" target="_blank">@t.Transaction_Hash.Substring(0, 10)...</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NFT Transfers -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">NFT Transfers</div>
+                <div class="card-body">
+                    <table id="nftTransferTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Token ID</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Tx Hash</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model.NftTransfers?.Result ?? new List<core_web.Services.NftTransfer>())
+                            {
+                                <tr>
+                                    <td>@t.Block_Timestamp.ToString("yyyy-MM-dd")</td>
+                                    <td>@t.Token_Id</td>
+                                    <td>@t.From_Address</td>
+                                    <td>@t.To_Address</td>
+                                    <td><a href="https://sepolia.etherscan.io/tx/@t.Transaction_Hash" target="_blank">@t.Transaction_Hash.Substring(0, 10)...</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+
+        // Token balances chart
+        var tokenData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                    Model.Tokens?.Result.Select(t => new { symbol = t.Symbol, value = t.Usd_Value })
+            ));
+
+    var tokenOptions = {
+        chart: { type: 'pie' },
+        series: tokenData.map(x => x.value),
+        labels: tokenData.map(x => x.symbol),
+    };
+    new ApexCharts(document.querySelector("#tokenBalancesChart"), tokenOptions).render();
+
+        // Transaction distribution chart
+        var txData = {
+            series: [@Model.Stats?.Transactions?.Total ?? 0, @Model.Stats?.Nft_Transfers?.Total ?? 0, @Model.Stats?.Token_Transfers?.Total ?? 0],
+            labels: ['Transactions', 'NFT Transfers', 'Token Transfers']
+        };
+
+        var txOptions = {
+            chart: { type: 'donut' },
+            series: txData.series,
+            labels: txData.labels,
+        };
+        new ApexCharts(document.querySelector("#txChart"), txOptions).render();
+    </script>
+}
