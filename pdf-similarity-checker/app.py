@@ -10,7 +10,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# Base directory and filess
+# Base directory and files
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 index_file = os.path.join(BASE_DIR, "pdf_embeddings.index")
 metadata_file = os.path.join(BASE_DIR, "pdf_metadata.json")
