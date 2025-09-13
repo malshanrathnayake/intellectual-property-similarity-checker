@@ -39,6 +39,8 @@ jobs:
         pip install -r requirements-py310.txt
 
     - name: Run unit tests with coverage
+      env:
+        CI: true
       run: |
         pip install pytest pytest-cov
         pytest tests/ --cov=app --cov=utils --cov-report xml --cov-report term

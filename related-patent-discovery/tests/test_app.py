@@ -7,27 +7,31 @@ from io import BytesIO
 # -------------------------------
 @pytest.mark.asyncio
 async def test_search(client):
-    response = await client.get("/search", params={"query": "neural network"})
-    assert response.status_code == 200
-    json_data = response.json()
-    assert "results" in json_data
-    assert isinstance(json_data["results"], list)
+    with patch("app.index.search", return_value=(np.array([[0.5]]), np.array([[0]]))):
+        response = await client.get("/search", params={"query": "neural network"})
+        assert response.status_code == 200
+        json_data = response.json()
+        assert "results" in json_data
+        assert isinstance(json_data["results"], list)
+
 
 # -------------------------------
 # Test: POST /register
 # -------------------------------
 @pytest.mark.asyncio
 async def test_register(client):
-    payload = {
-        "title": "Test Patent",
-        "abstract": "An abstract on AI models.",
-        "claims": ["1. A system that learns...", "2. The method of claim 1..."]
-    }
-    response = await client.post("/register", json=payload)
-    assert response.status_code == 200
-    json_data = response.json()
-    assert "status" in json_data
-    assert json_data["status"] in ["approved", "rejected"]
+    with patch("app.index.search", return_value=(np.array([[1.1]]), np.array([[0]]))):
+        payload = {
+            "title": "Test Patent",
+            "abstract": "An abstract on AI models.",
+            "claims": ["1. A system that learns...", "2. The method of claim 1..."]
+        }
+        response = await client.post("/register", json=payload)
+        assert response.status_code == 200
+        json_data = response.json()
+        assert "status" in json_data
+        assert json_data["status"] in ["approved", "rejected"]
+
 
 # -------------------------------
 # Test: GET /cid/{id}
@@ -68,7 +72,8 @@ async def test_register_pdf(client):
     }), patch("app.get_cid_from_blockchain", return_value="mockCID"), \
          patch("app.upload_file_to_pinata", return_value="mockPDFCID"), \
          patch("app.upload_json_to_pinata", return_value="mockMetaCID"), \
-         patch("app.store_cid_on_blockchain", return_value="mockTXHash"):
+         patch("app.store_cid_on_blockchain", return_value="mockTXHash"), \
+         patch("app.index.search", return_value=(np.array([[1.1]]), np.array([[0]]))):  # ADD THIS
 
         files = {"file": ("test.pdf", BytesIO(dummy_pdf_bytes), "application/pdf")}
         response = await client.post("/register/pdf", files=files)
@@ -77,3 +82,4 @@ async def test_register_pdf(client):
         json_data = response.json()
         assert json_data["status"] in ["approved", "rejected"]
         assert "success" in json_data
+

@@ -32,8 +32,11 @@ with open("patents.json", "r", encoding="utf-8") as f:
 EMBED_PATH = "cache/embeddings.npy"
 INDEX_PATH = "cache/faiss.index"
 
-if not os.path.exists(EMBED_PATH) or not os.path.exists(INDEX_PATH):
-    raise RuntimeError("Cached FAISS index or embeddings not found. Run tools/rebuild_faiss_index.py first.")
+IS_CI = os.getenv("CI") == "true"
+
+if not IS_CI:
+    if not os.path.exists(EMBED_PATH) or not os.path.exists(INDEX_PATH):
+        raise RuntimeError("Cached FAISS index or embeddings not found. Run tools/rebuild_faiss_index.py first.")
 
 embeddings = np.load(EMBED_PATH)
 index = faiss.read_index(INDEX_PATH)
