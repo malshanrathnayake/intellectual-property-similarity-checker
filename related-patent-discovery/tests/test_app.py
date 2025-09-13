@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from io import BytesIO
+import numpy as np
 
 # -------------------------------
 # Test: GET /search
