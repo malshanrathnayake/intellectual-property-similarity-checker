@@ -22,10 +22,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore ./ip-registry-client/core_web/core_web.csproj
+      run: dotnet restore ./ip-registry-client/ip-registry-client.sln
 
-    - name: Build
-      run: dotnet build ./ip-registry-client/core_web/core_web.csproj --no-restore --configuration Release
+    - name: Build solution
+      run: dotnet build ./ip-registry-client/ip-registry-client.sln --no-restore --configuration Release
 
     - name: Run tests
-      run: dotnet test ./ip-registry-client/ip-registry-client.sln --no-build --configuration Release --logger "trx"
+      run: dotnet test ./ip-registry-client/ip-registry-client.sln --no-restore --configuration Release --logger "trx"
