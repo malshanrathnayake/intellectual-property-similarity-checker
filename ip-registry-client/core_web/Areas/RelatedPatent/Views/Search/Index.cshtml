@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Semantic Patent Search";
+}
+
+@section Scripts {
+    <script src="~/assetsV1/js/related-patent-search.js"></script>
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Semantic Patent Search</h5>
+        </div>
+        <div class="card-body">
+            <form id="searchForm">
+                <div class="mb-3">
+                    <label for="queryInput" class="form-label">Enter your search query</label>
+                    <input type="text" id="queryInput" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <div id="loadingSpinner" class="text-center my-3 d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="mt-2">Searching patents...</div>
+            </div>
+
+            <div id="searchResults" class="mt-4 d-none">
+                <h6>Search Results</h6>
+                <div id="resultsContainer"></div>
+            </div>
+
+            <div id="searchError" class="alert alert-danger mt-3 d-none"></div>
+        </div>
+    </div>
+</div>
+<!-- Similarity Chart -->
+<div class="card mt-4 d-none" id="chartCard">
+    <div class="card-header">
+        <h6>Semantic Similarity Ranking</h6>
+    </div>
+    <div class="card-body">
+        <svg id="similarityChart" width="100%" height="300"></svg>
+    </div>
+</div>
+

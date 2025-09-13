@@ -15,6 +15,20 @@
     "Url": "/Patent/Landing/Index"
   },
   {
+    "Title": "Related Patent",
+    "Icon": "cil-lightbulb",
+    "Children": [
+      {
+        "Title": "Upload",
+        "Url": "/RelatedPatent/Landing/Index"
+      },
+      {
+        "Title": "Search",
+        "Url": "/RelatedPatent/Search/Index"
+      }
+    ]
+  },
+  {
     "Title": "Video Recognition",
     "Icon": "cil-video",
     "Url": "/Video/Landing/Index"
