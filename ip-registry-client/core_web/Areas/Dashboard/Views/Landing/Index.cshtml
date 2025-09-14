@@ -1,5 +1,81 @@
 ﻿@{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
 }
 
-<h1>Hello</h1>
+<div class="container-lg px-4 mt-4">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <!-- Stats Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header fw-semibold">System Stats</div>
+                <div class="card-body row text-center">
+                    <div class="col-md-4 border-end">
+                        <div class="fs-4 fw-semibold">120</div>
+                        <div class="text-body-secondary">Similarity Checks</div>
+                    </div>
+                    <div class="col-md-4 border-end">
+                        <div class="fs-4 fw-semibold">45</div>
+                        <div class="text-body-secondary">Blockchain Registrations</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="fs-4 fw-semibold">350</div>
+                        <div class="text-body-secondary">Remaining Credits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flow Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header fw-semibold">Check Flow</div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4 border-end">
+                            <div class="fs-4 fw-semibold">80</div>
+                            <div class="text-body-secondary">Video Similarity Checks</div>
+                        </div>
+                        <div class="col-md-4 border-end">
+                            <div class="fs-4 fw-semibold">25</div>
+                            <div class="text-body-secondary">PDF Checks</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="fs-4 fw-semibold">15</div>
+                            <div class="text-body-secondary">Patent Checks</div>
+                        </div>
+                    </div>
+
+                    <!-- Optional Chart -->
+                    <div class="c-chart-wrapper mt-4" style="height:200px">
+                        <canvas id="flow-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/vendors/chart.js/js/chart.umd.js"></script>
+    <script>
+        // Example Chart.js for flow visualization
+        const ctx = document.getElementById('flow-chart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Video', 'PDF', 'Patent'],
+                datasets: [{
+                    label: 'Checks',
+                    data: [80, 25, 15], // Replace with Model data later
+                    backgroundColor: ['#0d6efd','#ffc107','#dc3545']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    </script>
+}
