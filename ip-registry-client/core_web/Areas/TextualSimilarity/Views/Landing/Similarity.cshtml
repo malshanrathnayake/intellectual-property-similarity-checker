@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Contextual Similarity Results";
+
+    double topScore = ViewBag.TopScore ?? 0.0;
+    string overallStatus = topScore < 0.6
+        ? "Similarity score is below threshold. Registration may proceed."
+        : "Similarity score exceeds threshold. Registration is not recommended.";
+    string overallClass = topScore < 0.6 ? "bg-success" : "bg-danger";
+}
+
+<div class="container mt-4">
+    <h4 class="mb-4">Contextual Similarity Results</h4>
+
+    <!-- Overall Similarity Summary -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Overall Similarity</h5>
+            <div class="progress mb-3" style="height: 25px;">
+                <div class="progress-bar @overallClass"
+                     role="progressbar"
+                     style="width: @(topScore * 100)%">
+                    @topScore.ToString("P2")
+                </div>
+            </div>
+            <p class="mb-0 text-muted">
+                Threshold: 60% <br />
+                <strong>@overallStatus</strong>
+            </p>
+        </div>
+    </div>
+
+    @if (ViewBag.Results != null && ViewBag.Results.Count > 0)
+    {
+        <div class="row">
+            @foreach (var result in ViewBag.Results)
+            {
+                var resultClass = result.Similarity < 0.6 ? "bg-success" : "bg-danger";
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@result.Title</h5>
+                            <h6 class="card-subtitle text-muted mb-3">
+                                @result.Author (@result.Year)
+                            </h6>
+
+                            <!-- Progress bar similarity -->
+                            <div class="mb-3">
+                                <label class="form-label">Similarity</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar @resultClass"
+                                         role="progressbar"
+                                         style="width: @(result.Similarity * 100)%">
+                                        @result.Similarity.ToString("P2")
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Key metadata -->
+                            <ul class="list-unstyled small mb-3">
+                                <li><strong>Language:</strong> @result.Language</li>
+                                <li><strong>Publisher:</strong> @result.Publisher</li>
+                                <li><strong>Rights:</strong> @result.Rights</li>
+                                <li><strong>Downloads:</strong> @result.Downloads</li>
+                            </ul>
+
+                            <!-- Expandable details -->
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#details-@result.BookId">
+                                More Details
+                            </button>
+                            <div class="collapse mt-2" id="details-@result.BookId">
+                                <p><strong>Word Count:</strong> @result.WordCount</p>
+                                <p><strong>Character Count:</strong> @result.CharCount</p>
+                                <a href="@result.TextPath" target="_blank" class="btn btn-link p-0">📖 Open Full Text</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (topScore < 0.6)
+        {
+            <div class="alert alert-success mt-3">
+                Similarity score is within acceptable range. You may proceed to register this PDF.
+            </div>
+            <form asp-action="Register" asp-controller="Landing" asp-area="TextualSimilarity" method="post" class="d-inline">
+                <button type="submit" class="btn btn-primary">Register PDF</button>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-danger mt-3">
+                Similarity score exceeds the 60% threshold. Registration is not recommended.
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">No similar works found in the dataset.</div>
+    }
+
+    <div class="mt-4">
+        <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary">
+            ← Back to Check Similarity
+        </a>
+    </div>
+</div>

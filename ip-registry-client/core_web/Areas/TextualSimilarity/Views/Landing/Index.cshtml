@@ -1,0 +1,122 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Check Patent Similarity";
+}
+
+<style>
+    .uppercase-text {
+        text-transform: uppercase;
+        color: black; /* Black text color */
+        font-weight: bold; /* Make it stand out more */
+    }
+</style>
+
+
+<div class="container mt-4">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h3>Contextual Similarity Assessment</h3>
+        <p class="text-muted">
+            This tool allows authors, researchers, and content creators to verify whether their work
+            shows significant contextual overlap with existing publications. By uploading a document,
+            the system compares its semantic meaning against a reference dataset (e.g., Project Gutenberg)
+            to help you assess originality before proceeding with intellectual property registration.
+        </p>
+    </div>
+
+    <!-- Guidance Section -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <strong class="uppercase-text">How to Use</strong>
+        </div>
+        <div class="card-body">
+            <ol class="mb-0">
+                <li>Enter the <strong>Title</strong> and <strong>Author</strong> of your work.</li>
+                <li>Select the <strong>Language</strong> of the document.</li>
+                <li>Upload the <strong>PDF file</strong> of your manuscript or draft.</li>
+                <li>Click <strong>Check Similarity</strong>.</li>
+            </ol>
+            <p class="mt-3 mb-0">
+                The system will analyze the document, compute contextual similarity scores,
+                and provide you with a summary of the closest matching works.
+                If the similarity score is below the acceptable threshold (60%),
+                your work may be considered sufficiently novel for registration.
+            </p>
+        </div>
+    </div>
+
+    <!-- Error Display -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <!-- Results Display -->
+    @if (ViewBag.Results != null)
+    {
+        <div class="alert alert-info">
+            <h6>Recent Similarity Results</h6>
+            <ul>
+                @foreach (var result in ViewBag.Results)
+                {
+                    <li>
+                        <strong>@result.Title</strong> by @result.Author
+                        — Similarity: <span class="fw-bold">@result.Score%</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <!-- Upload Form -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <strong class="uppercase-text">Upload Document</strong>
+        </div>
+        <div class="card-body">
+            <form asp-action="Check" asp-controller="Landing" asp-area="TextualSimilarity" method="post" enctype="multipart/form-data" id="similarityForm">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input name="title" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Author</label>
+                    <input name="author" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Language</label>
+                    <select name="language" class="form-control" required>
+                        <option value="">-- Select Language --</option>
+                        <option>English</option>
+                        <option>Sinhala</option>
+                        <option>Tamil</option>
+                        <option>French</option>
+                        <option>German</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload PDF</label>
+                    <input type="file" name="pdf" class="form-control" accept="application/pdf" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <span id="spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                    Check Similarity
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const form = document.getElementById('similarityForm');
+        form.addEventListener('submit', function () {
+            document.getElementById('spinner').classList.remove('d-none');
+        });
+    </script>
+}
