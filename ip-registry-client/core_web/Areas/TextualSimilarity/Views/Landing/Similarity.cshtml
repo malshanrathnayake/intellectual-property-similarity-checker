@@ -72,7 +72,7 @@
                             <div class="collapse mt-2" id="details-@result.BookId">
                                 <p><strong>Word Count:</strong> @result.WordCount</p>
                                 <p><strong>Character Count:</strong> @result.CharCount</p>
-                                <a href="@result.TextPath" target="_blank" class="btn btn-link p-0">📖 Open Full Text</a>
+                                <a href="@Url.Content("~/texts/" + result.TextPath)" target="_blank" class="btn btn-link p-0">📖 Open Full Text</a>
                             </div>
                         </div>
                     </div>
@@ -85,25 +85,38 @@
             <div class="alert alert-success mt-3">
                 Similarity score is within acceptable range. You may proceed to register this PDF.
             </div>
-            <form asp-action="Register" asp-controller="Landing" asp-area="TextualSimilarity" method="post" class="d-inline">
-                <button type="submit" class="btn btn-primary">Register PDF</button>
-            </form>
+
+            <!-- Buttons side by side -->
+            <div class="d-flex justify-content-between mt-4">
+                <!-- Back Button on the left side -->
+                <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary btn-sm">
+                    ← Back to Check Similarity
+                </a>
+
+                <!-- Register PDF Button on the right side -->
+                <form asp-action="Register" asp-controller="Landing" asp-area="TextualSimilarity" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary">Register PDF</button>
+                </form>
+            </div>
         }
         else
         {
+
+            <div class="mt-4">
+                <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary">
+                    ← Back to Check Similarity
+                </a>
+            </div>
             <div class="alert alert-danger mt-3">
                 Similarity score exceeds the 60% threshold. Registration is not recommended.
             </div>
         }
+
+
     }
     else
     {
         <div class="alert alert-warning">No similar works found in the dataset.</div>
     }
 
-    <div class="mt-4">
-        <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary">
-            ← Back to Check Similarity
-        </a>
-    </div>
 </div>
