@@ -61,6 +61,7 @@
 
                 data.similar.forEach((item, index) => {
                     const collapseId = `collapse${index}`;
+
                     const html = `
                         <div class="card mb-2">
                             <div class="card-header d-flex justify-content-between align-items-center">
@@ -72,6 +73,7 @@
                             <div id="${collapseId}" class="collapse">
                                 <div class="card-body">
                                     <p><strong>Title:</strong> ${item.title}</p>
+                                    <div><strong>Abstract:</strong><br>${renderToggleText(item.abstract || "N/A", `rejectedAbstract${index}`)}</div>
                                     <p><strong>Distance:</strong> ${item.faiss_distance}</p>
                                     ${item.pdf_cid ? `
                                         <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
@@ -81,12 +83,12 @@
                                     ` : `
                                         <span class="text-muted">No CID available</span>
                                     `}
-
                                 </div>
                             </div>
                         </div>
                     `;
                     rejectionList.insertAdjacentHTML("beforeend", html);
+
                 });
             } else {
                 throw new Error(data.message || "Extraction failed.");

@@ -10,3 +10,10 @@ python-dotenv==1.0.0
 web3==5.31.4
 requests==2.31.0
 huggingface-hub==0.14.1
+pytest
+httpx
+pytest-asyncio
+pytest-cov
+coverage
+flake8
+python-multipart

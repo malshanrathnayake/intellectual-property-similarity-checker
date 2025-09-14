@@ -1,0 +1,12 @@
+[
+  {
+    "id": 123,
+    "title": "Mock Patent A",
+    "abstract": "This is a mock abstract about AI.",
+    "claims": [
+      "1. A method for AI model training...",
+      "2. The method of claim 1 further includes..."
+    ],
+    "pdf_cid": "mockCID"
+  }
+]
