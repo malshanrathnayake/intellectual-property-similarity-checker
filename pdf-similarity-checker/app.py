@@ -99,24 +99,23 @@ def check_similarity():
                 similarity = float(1 / (1 + distance))  # or 1 - distance for cosine
                 results.append({
                     "book_id": book.get("book_id"),
-    "title": book.get("title"),
-    "author": book.get("author"),
-    "year": book.get("year"),
-    "language": book.get("language"),
-    "publisher": book.get("publisher"),
-    "rights": book.get("rights"),
-    "downloads": book.get("downloads"),
-    "word_count": book.get("word_count"),
-    "char_count": book.get("char_count"),
-    "text_path": book.get("text_path"),
-    "similarity": round(similarity, 4)
+                    "title": book.get("title"),
+                    "author": book.get("author"),
+                    "year": book.get("year"),
+                    "language": book.get("language"),
+                    "publisher": book.get("publisher"),
+                    "rights": book.get("rights"),
+                    "downloads": book.get("downloads"),
+                    "word_count": book.get("word_count"),
+                    "char_count": book.get("char_count"),
+                    "text_path": book.get("text_path"),
+                    "similarity": round(similarity, 4)
                 })
 
         return jsonify({"similar_books": results})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # Run server
 if __name__ == '__main__':
