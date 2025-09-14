@@ -101,6 +101,14 @@ def check_similarity():
                     "book_id": book.get("book_id"),
                     "title": book.get("title"),
                     "author": book.get("author"),
+                    "year": book.get("year"),
+                    "language": book.get("language"),
+                    "publisher": book.get("publisher"),
+                    "rights": book.get("rights"),
+                    "downloads": book.get("downloads"),
+                    "word_count": book.get("word_count"),
+                    "char_count": book.get("char_count"),
+                    "text_path": book.get("text_path"),
                     "similarity": round(similarity, 4)
                 })
 
@@ -108,7 +116,6 @@ def check_similarity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # Run server
 if __name__ == '__main__':

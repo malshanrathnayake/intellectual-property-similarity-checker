@@ -5,9 +5,9 @@
     "Url": "/Dashboard/Landing/Index"
   },
   {
-    "Title": "PDF Analyzer",
+    "Title": "Textual Similarity",
     "Icon": "cil-description",
-    "Url": "/Pdf/Landing/Index"
+    "Url": "/TextualSimilarity/Landing/Index"
   },
   {
     "Title": "Related Patent",
