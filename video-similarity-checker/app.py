@@ -1,3 +1,6 @@
+import os
+os.environ["USE_TF"] = "0"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import CLIPProcessor, CLIPModel
@@ -5,8 +8,8 @@ import torch
 import cv2
 import faiss
 import numpy as np
-import os
 import json
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 CORS(app)
@@ -64,28 +67,72 @@ def generate_video_embedding(frames):
 @app.route('/upload_and_train_video', methods=['POST'])
 def upload_and_train_video():
     try:
+        if 'video' not in request.files:
+            return jsonify({"error": "Missing 'video' file."}), 400
+
         video = request.files['video']
         video_name = video.filename
+        if not video_name:
+            return jsonify({"error": "Uploaded file has no name."}), 400
+
         video_path = os.path.join(uploaded_videos_dir, video_name)
-        
+        os.makedirs(uploaded_videos_dir, exist_ok=True)
         video.save(video_path)
 
+        # Optional text fields (C# sends these)
+        title = request.form.get('title', '').strip()
+        category = request.form.get('category', '').strip()
+        description = request.form.get('description', '').strip()
+        published_source = request.form.get('published_source', '').strip()
+        creator = request.form.get('creator', '').strip()
+        wallet_address = request.form.get('wallet_address', '').strip()
+
+        # Auto-set date (UTC) as YYYY-MM-DD
+        date_of_creation = datetime.now(timezone.utc).date().isoformat()
+
+        # Embed & index
         frames = extract_key_frames(video_path)
         embedding = generate_video_embedding(frames)
+        index.add(np.array([embedding], dtype=np.float32))
 
-        index.add(np.array([embedding]))
-        metadata.append({"filename": video_name})
+        # Save metadata with auto date
+        metadata.append({
+            "filename": video_name,
+            "title": title,
+            "category": category,
+            "creator": creator,
+            "description": description,
+            "published_source": published_source,
+            "date_of_creation": date_of_creation,
+            "wallet_address": wallet_address
+        })
 
+        # Persist
         faiss.write_index(index, index_file)
-        with open(metadata_file, 'w') as f:
-            json.dump(metadata, f)
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
 
-        os.remove(video_path)
+        # Clean up
+        try:
+            os.remove(video_path)
+        except OSError:
+            pass
 
-        return jsonify({"message": "Video trained successfully."})
+        return jsonify({
+            "message": "Video trained successfully.",
+            "date_of_creation": date_of_creation,
+            "filename": video_name,
+            "title": title,
+            "category": category,
+            "creator": creator,
+            "description": description,
+            "published_source": published_source,
+            "wallet_address": wallet_address
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/check_video_similarity', methods=['POST'])
 def check_video_similarity():
@@ -104,15 +151,23 @@ def check_video_similarity():
             return jsonify({"similar_videos": [], "message": "No embeddings available."})
 
         k = min(3, num_embeddings)
-        distances, indices = index.search(np.array([embedding]), k=k)
+        distances, indices = index.search(np.array([embedding], dtype=np.float32), k=k)
 
         results = []
         seen_files = set()
         for distance, idx in zip(distances[0], indices[0]):
-            filename = metadata[idx]['filename']
+            entry = metadata[idx]  # full metadata dict from video_metadata.json
+            filename = entry.get("filename")
             if filename not in seen_files:
                 results.append({
-                    "filename": filename,
+                    "filename": entry.get("filename"),
+                    "title": entry.get("title"),
+                    "category": entry.get("category"),
+                    "creator": entry.get("creator"),
+                    "description": entry.get("description"),
+                    "published_source": entry.get("published_source"),
+                    "date_of_creation": entry.get("date_of_creation"),
+                    "wallet_address": entry.get("wallet_address", ""),  # optional
                     "similarity": float(1 / (1 + distance))
                 })
                 seen_files.add(filename)
@@ -123,6 +178,7 @@ def check_video_similarity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=6000)

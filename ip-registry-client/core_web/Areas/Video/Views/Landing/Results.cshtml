@@ -1,0 +1,138 @@
+﻿@using System.Text.Json
+@model Dictionary<string, object>
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Video Upload Result";
+
+    var title = Model?["Title"]?.ToString();
+    var category = Model?["Category"]?.ToString();
+    var creator = Model?["Creator"]?.ToString();
+    var description = Model?["Description"]?.ToString();
+    var publishedSource = Model?["PublishedSource"]?.ToString();
+    var dateOfCreation = Model?["DateOfCreation"]?.ToString();
+    var wallet = Model?["WalletAddress"]?.ToString();
+    var fileName = Model?["FileName"]?.ToString();
+    var simResultsJson = Model?["SimilarityResults"]?.ToString();
+
+    List<Dictionary<string, object>> simResults = new();
+    if (!string.IsNullOrEmpty(simResultsJson))
+    {
+        simResults = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(simResultsJson);
+    }
+
+    var canRegister = true; // default to true, set false if high similarity is detected
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <!-- Main Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="cil-check-circle me-2"></i> Video Upload Result
+                    </h5>
+                    <span class="badge bg-light text-dark">@DateTime.Now.ToString("yyyy-MM-dd HH:mm")</span>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Metadata -->
+                    <h6 class="fw-bold mb-3 text-primary">Metadata Details</h6>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <tbody>
+                                <tr><th style="width: 25%">Title</th><td class="fw-semibold">@title</td></tr>
+                                <tr><th>Category</th><td><span class="badge bg-info">@category</span></td></tr>
+                                <tr><th>Creator</th><td>@creator</td></tr>
+                                <tr><th>Description</th><td>@description</td></tr>
+                                <tr><th>Published Source</th><td>@publishedSource</td></tr>
+                                <tr><th>Date of Creation</th><td>@dateOfCreation</td></tr>
+                                <tr><th>Wallet Address</th><td><code>@wallet</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Similarity Results -->
+                    <h6 class="fw-bold mt-4 mb-3 text-primary">Similarity Check Results</h6>
+                    @if (simResults != null && simResults.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var sim in simResults)
+                            {
+                                var filename = sim.GetValueOrDefault("filename")?.ToString();
+                                var simTitle = sim.GetValueOrDefault("title")?.ToString();
+                                var simCreator = sim.GetValueOrDefault("creator")?.ToString();
+                                var simValueObj = sim.GetValueOrDefault("similarity");
+                                double simValue = 0;
+                                if (simValueObj != null && double.TryParse(simValueObj.ToString(), out var parsed))
+                                {
+                                    simValue = parsed;
+                                }
+                                var simPercent = (int)(simValue * 100);
+
+                                if (simPercent >= 30) // reject if similarity >= 30%
+                                {
+                                    canRegister = false;
+                                }
+
+                                <div class="list-group-item mb-3 rounded shadow-sm border p-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">@simTitle</h6>
+                                            <small class="text-muted">
+                                                <i class="cil-file"></i> @filename | <i class="cil-user"></i> @simCreator
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-secondary">@string.Format("{0:P0}", simValue)</span>
+                                    </div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width:@simPercent%"></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">No similar videos found in the registry.</div>
+                    }
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <a asp-action="Upload" asp-controller="Landing" asp-area="Video" class="btn btn-outline-secondary me-2">
+                            <i class="cil-arrow-left me-1"></i> Upload Another
+                        </a>
+
+                        @if (canRegister)
+                        {
+                            <a asp-action="RegisterOnBlockchain"
+                               asp-controller="Landing"
+                               asp-area="Video"
+                               asp-route-Title="@title"
+                               asp-route-Category="@category"
+                               asp-route-CreatorName="@creator"
+                               asp-route-Description="@description"
+                               asp-route-PublishedSource="@publishedSource"
+                               asp-route-DateOfCreation="@dateOfCreation"
+                               asp-route-FileName="@fileName"
+                               class="btn btn-primary">
+                                <i class="cil-layers me-1"></i> Register on Blockchain
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0)" class="btn btn-primary disabled">
+                                <i class="cil-layers me-1"></i> Register on Blockchain
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

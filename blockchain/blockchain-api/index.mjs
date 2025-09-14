@@ -152,6 +152,61 @@ app.post('/ipfs/registerImage', async (req, res) => {
   }
 });
 
+// Video registration endpoint
+app.post('/ipfs/registerVideo', async (req, res) => {
+  try {
+    const {
+      filename,
+      title,
+      category,
+      creator,
+      description,
+      published_source,
+      date_of_creation,
+      wallet_address
+    } = req.body;
+
+    if (!filename || !title || !creator || !wallet_address) {
+      return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    // Build metadata object
+    const videoMetadata = {
+      filename,
+      title,
+      category,
+      creator,
+      description,
+      published_source,
+      date_of_creation,
+      wallet_address
+    };
+
+    // Upload metadata JSON to Pinata
+    const metaUploadRes = await axios.post(
+      "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+      videoMetadata,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PINATA_JWT}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const metaHash = metaUploadRes.data.IpfsHash;
+
+    res.json({
+      message: "Video metadata registered successfully",
+      ipfsHash: metaHash,
+      ipfsUrl: `ipfs://${metaHash}`,
+      gatewayUrl: `https://gateway.pinata.cloud/ipfs/${metaHash}`
+    });
+  } catch (error) {
+    console.error("Video register failed:", error?.response?.data || error.message);
+    res.status(500).json({ error: error?.message || "Video registration failed." });
+  }
+});
 
 // Blockchain registration route
 app.post('/blockchain/register', async (req, res) => {

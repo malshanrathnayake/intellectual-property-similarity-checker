@@ -6,84 +6,9 @@
 }
 
 <div class="container mt-4">
-    <h4>Upload Intellectual Property Video</h4>
-
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger">@ViewBag.Error</div>
-    }
-
-    @if (ViewBag.Success != null && ViewBag.Success)
-    {
-        <div class="alert alert-success">
-            ✅ Similarity Check Completed.
-            <br />
-            📈 Similarity Score: @(ViewBag.SimilarityScore != null ? ((double)ViewBag.SimilarityScore).ToString("P2") : "N/A")<br />
-            @(ViewBag.Trained ? "🧠 Video has been trained (new entry added)." : "⚠️ Similarity too high, not trained.")
-        </div>
-
-        @if (ViewBag.Similar.Count > 0)
-        {
-            <div class="mt-3">
-                <h6>Top Matches</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Filename</th>
-                            <th>Similarity Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in ViewBag.Similar as List<SimilarVideo>)
-                        {
-                            <tr>
-                                <td>@item.Filename</td>
-                                <td>@(item.Similarity.ToString("P2"))</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-info mt-3">No similar videos found.</div>
-        }
-    }
-
-    <form asp-action="Index" asp-controller="Landing" asp-action="Video" method="post" enctype="multipart/form-data" id="uploadVideoForm">
-        <div class="mb-3">
-            <label class="form-label">Video Title</label>
-            <input name="videoTitle" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Creator Name</label>
-            <input name="creatorName" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Category</label>
-            <input name="category" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Upload Video</label>
-            <input type="file" name="video" class="form-control" accept="video/*" required />
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            <span id="spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-            Check & Train Video
-        </button>
-    </form>
+    
 </div>
 
 @section Scripts {
-    <script>
-        const form = document.getElementById('uploadVideoForm');
-        form.addEventListener('submit', function () {
-            document.getElementById('spinner').classList.remove('d-none');
-        });
-    </script>
+    
 }

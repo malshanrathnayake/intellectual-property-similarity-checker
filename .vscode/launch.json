@@ -34,6 +34,32 @@
         "FLASK_ENV": "development",
         "FLASK_APP": "app.py"
       }
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Video",
+      "program": "${workspaceFolder}/video-similarity-checker/app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/video-similarity-checker",
+      "env": {
+        "FLASK_ENV": "development",
+        "FLASK_APP": "app.py"
+      }
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "patent",
+      "program": "${workspaceFolder}/related-patent-discovery/app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/related-patent-discovery",
+      "env": {
+        "FLASK_ENV": "development",
+        "FLASK_APP": "app.py"
+      }
     }
   ]
 }

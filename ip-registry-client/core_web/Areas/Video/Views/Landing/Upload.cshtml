@@ -1,0 +1,68 @@
+﻿@model core_web.Areas.Video.Controllers.VideoUploadDto
+
+@{
+    ViewData["Title"] = "Upload Video";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Upload Video</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Enter video title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Category" class="form-label">Category</label>
+                    <input asp-for="Category" class="form-control" placeholder="Enter category" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CreatorName" class="form-label">Creator Name</label>
+                    <input asp-for="CreatorName" class="form-control" placeholder="Enter creator name" />
+                    <span asp-validation-for="CreatorName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description (optional)"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PublishedSource" class="form-label">Published Source</label>
+                    <input asp-for="PublishedSource" class="form-control" placeholder="Enter source URL (optional)" />
+                    <span asp-validation-for="PublishedSource" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DateOfCreation" class="form-label">Date of Creation</label>
+                    <input asp-for="DateOfCreation" type="date" class="form-control" />
+                    <span asp-validation-for="DateOfCreation" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="File" class="form-label">Upload Video</label>
+                    <input asp-for="File" type="file" class="form-control" accept="video/*" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="cil-cloud-upload me-1"></i> Upload & Train
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
