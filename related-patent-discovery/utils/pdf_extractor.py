@@ -60,30 +60,59 @@ def extract_patent_sections(file_bytes: bytes) -> dict:
     else:
         full_text = fitz_text
 
-    lines = [line.strip() for line in full_text.splitlines() if line.strip()]
+    # Clean lines more aggressively: remove headers, footers, references, codes
+    lines = []
+    for line in full_text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        # Skip patent codes or references like "US1234567", "H04W 4/00", etc.
+        if re.match(r"^(?:\(?\d{1,4}\)?\.?|US\s*\d+|[A-Z]+\d+[A-Z]?\s*\d+/\d+)", line):
+            continue
+        # Skip lines with mostly non-alphanumeric characters (e.g., dividers, symbols)
+        if len(re.sub(r"[A-Za-z0-9]", "", line)) > 0.5 * len(line):
+            continue
+        lines.append(line)
     lowered = "\n".join(lines).lower()
 
     # --- Title ---
-    title = next((line for line in lines if "patent" in line.lower() and len(line) < 100), "Untitled")
+    title_match = re.search(r"\(?\s*54\s*\)?\s*[:\-]?\s*(.+?)(?=\n|\r)", full_text, re.IGNORECASE)
+    if title_match:
+        title = title_match.group(1).strip()
+    else:
+        title = next(
+            (line for line in lines 
+             if 10 < len(line) < 120 and not line.lower().startswith(
+                 ("united states", "application number", "abstract", "claims", "field of", "background"))),
+            "Untitled"
+        )
 
     # --- Abstract ---
-    # --- Optimized Abstract Extraction ---
+    # --- Cleaner abstract extraction from patent metadata block ---
     abstract_match = re.search(
-        r"(?i)(?<=abstract)(?:\s*[:\-\.]?\s*)(.+?)(?=\n\s*(?:field of invention|technical field|field|background|summary|claims|description|brief description|detailed description|\n\d+\s*\.))",
-        full_text, re.DOTALL
+        r"\(\s*57\s*\)\s*abstract\s*[:\-\.]?\s*(.+?)(?=\n\s*\(?\d{1,3}\)?\s+[A-Z])",
+        full_text,
+        re.IGNORECASE | re.DOTALL
     )
 
     abstract = ""
+
     if abstract_match:
         abstract_candidate = abstract_match.group(1).strip()
         abstract_lines = abstract_candidate.splitlines()
-
-        # Further clean-up: explicitly exclude lines containing patent codes/classifications
         abstract_lines = [
             line.strip() for line in abstract_lines
-            if line.strip() and not re.match(r"^\(?\s*\d+\s*\)?|[A-Z]+\d+[A-Z]?\s*\d+/\d+", line.strip())
+            if line.strip() and not re.match(r"^\(?\s*\d+\s*\)?", line.strip())
         ]
         abstract = " ".join(abstract_lines).replace('\n', ' ').strip()
+
+    # Fallback: if abstract still too short, try first meaningful paragraph
+    if len(abstract) < 50:
+        print("[INFO] Abstract fallback: trying first paragraph block")
+        for i, line in enumerate(lines):
+            if len(line.split()) > 12 and line.strip().endswith("."):
+                abstract = line.strip()
+                break
 
     # abstract = ""
     # abstract_match = re.search(
