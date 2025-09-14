@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Image\Controllers\" />
-    <Folder Include="Areas\Image\Views\" />
     <Folder Include="Areas\Patent\Controllers\" />
     <Folder Include="Areas\Patent\Views\" />
     <Folder Include="wwwroot\assetsV1\images\logo\" />

@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Blockchain",
+      "program": "${workspaceFolder}/blockchain/blockchain-api/index.mjs",
+      "cwd": "${workspaceFolder}/blockchain/blockchain-api",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Image Backend (Flask)",
+      "program": "${workspaceFolder}/image-similarity-checker/app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/image-similarity-checker",
+      "env": {
+        "FLASK_ENV": "development",
+        "FLASK_APP": "app.py"
+      }
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "PDF",
+      "program": "${workspaceFolder}/pdf-similarity-checker/app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/pdf-similarity-checker",
+      "env": {
+        "FLASK_ENV": "development",
+        "FLASK_APP": "app.py"
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+netstat -ano | findstr :4000
+
+taskkill /PID 21140 /F

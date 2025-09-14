@@ -1,0 +1,115 @@
+﻿@model core_web.Areas.Image.Controllers.ImageUploadDto
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Upload Image IP";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="cil-image me-2"></i> Upload Intellectual Property (Image)
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Upload" asp-controller="Landing" asp-area="Image" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold">Title / Work Name</label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g. Logo Design for ABC Corp." />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label asp-for="Category" class="form-label fw-bold">Category</label>
+                            <select asp-for="Category" class="form-select">
+                                <option value="">-- Select Category --</option>
+                                <option>Logo</option>
+                                <option>Artwork</option>
+                                <option>Photograph</option>
+                                <option>Design</option>
+                                <option>Other</option>
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+
+                        <!-- Creator Name -->
+                        <div class="mb-3">
+                            <label asp-for="CreatorName" class="form-label fw-bold">Creator / Owner</label>
+                            <input asp-for="CreatorName" class="form-control" placeholder="e.g. John Doe" />
+                            <span asp-validation-for="CreatorName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Briefly describe the uniqueness or purpose of this work"></textarea>
+                        </div>
+
+                        <!-- Published Source -->
+                        <div class="mb-3">
+                            <label asp-for="PublishedSource" class="form-label fw-bold">Published Source (if any)</label>
+                            <input asp-for="PublishedSource" class="form-control" placeholder="e.g. Journal name, website link" />
+                        </div>
+
+                        <!-- Date of Creation -->
+                        <div class="mb-3">
+                            <label asp-for="DateOfCreation" class="form-label fw-bold">Date of Creation</label>
+                            <input asp-for="DateOfCreation" type="date" class="form-control" />
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label asp-for="File" class="form-label fw-bold">Upload Image File</label>
+                            <input asp-for="File" type="file" class="form-control" accept="image/*" />
+                            <span asp-validation-for="File" class="text-danger"></span>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="mb-3 text-center">
+                            <img id="previewImage" src="#" alt="Preview will appear here" class="img-fluid rounded d-none border" style="max-height: 300px;" />
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end">
+                            <a asp-action="Index" asp-controller="Landing" asp-area="RelatedIP" class="btn btn-secondary me-2">
+                                <i class="cil-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="cil-cloud-upload me-1"></i> Submit for Similarity Check
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Preview uploaded image
+        document.querySelector('input[type="file"]').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = document.getElementById("previewImage");
+                    img.src = event.target.result;
+                    img.classList.remove("d-none");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

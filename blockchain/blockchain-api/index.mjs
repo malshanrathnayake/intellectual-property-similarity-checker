@@ -96,6 +96,61 @@ app.post('/ipfs/upload', async (req, res) => {
   }
 });
 
+// Image registration endpoint
+app.post('/ipfs/registerImage', async (req, res) => {
+  try {
+    const {
+      filename,
+      title,
+      category,
+      creator,
+      description,
+      published_source,
+      date_of_creation,
+      wallet_address
+    } = req.body;
+
+    if (!filename || !title || !creator || !wallet_address) {
+      return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    // Build metadata object
+    const imageMetadata = {
+      filename,
+      title,
+      category,
+      creator,
+      description,
+      published_source,
+      date_of_creation,
+      wallet_address
+    };
+
+    // Upload metadata JSON to Pinata
+    const metaUploadRes = await axios.post(
+      "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+      imageMetadata,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PINATA_JWT}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const metaHash = metaUploadRes.data.IpfsHash;
+
+    res.json({
+      message: "Image metadata registered successfully",
+      ipfsHash: metaHash,
+      ipfsUrl: `ipfs://${metaHash}`,
+      gatewayUrl: `https://gateway.pinata.cloud/ipfs/${metaHash}`
+    });
+  } catch (error) {
+    console.error("Image register failed:", error?.response?.data || error.message);
+    res.status(500).json({ error: error?.message || "Image registration failed." });
+  }
+});
 
 
 // Blockchain registration route

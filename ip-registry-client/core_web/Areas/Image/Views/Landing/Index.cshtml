@@ -1,0 +1,167 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Image IPs";
+    var metadataJson = ViewBag.MetadataJson ?? "[]";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Summary Cards -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Images</h5>
+                    <h2 id="total-images">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Unique Creators</h5>
+                    <h2 id="unique-creators">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <h2 id="categories-count">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Wallets</h5>
+                    <h2 id="wallets-count">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary"><h6>Registrations by Category</h6></div>
+                <div class="card-body"><div id="categoryChart"></div></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary"><h6>Registrations Over Time</h6></div>
+                <div class="card-body"><div id="timelineChart"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Creators -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary"><h6>Top Creators</h6></div>
+                <div class="card-body"><div id="creatorChart"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Registrations -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary"><h6>Recent Registrations</h6></div>
+                <div class="card-body table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Creator</th>
+                                <th>Date</th>
+                                <th>Wallet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    $(document).ready(function () {
+        let metadata = @Html.Raw(metadataJson);
+
+        // Summary
+        $("#total-images").text(metadata.length);
+        $("#unique-creators").text([...new Set(metadata.map(m => m.creator))].length);
+        $("#categories-count").text([...new Set(metadata.map(m => m.category))].length);
+        $("#wallets-count").text([...new Set(metadata.map(m => m.wallet_address))].length);
+
+        // Group by category
+        let categoryCounts = {};
+        metadata.forEach(m => { categoryCounts[m.category] = (categoryCounts[m.category] || 0) + 1; });
+
+        new ApexCharts($("#categoryChart")[0], {
+            chart: { type: 'donut',foreColor: '#fff' },
+            series: Object.values(categoryCounts),
+            labels: Object.keys(categoryCounts)
+        }).render();
+
+        // Group by date
+        let timelineCounts = {};
+        metadata.forEach(m => {
+            if (m.date_of_creation)
+                timelineCounts[m.date_of_creation] = (timelineCounts[m.date_of_creation] || 0) + 1;
+        });
+        let dates = Object.keys(timelineCounts).sort();
+        let counts = dates.map(d => timelineCounts[d]);
+
+        new ApexCharts($("#timelineChart")[0], {
+            chart: { type: 'area',foreColor: '#fff' },
+            series: [{ name: 'Registrations', data: counts }],
+            xaxis: { categories: dates }
+        }).render();
+
+        // Group by creator
+        let creatorCounts = {};
+        metadata.forEach(m => { creatorCounts[m.creator] = (creatorCounts[m.creator] || 0) + 1; });
+
+        new ApexCharts($("#creatorChart")[0], {
+            chart: { type: 'bar',foreColor: '#fff' },
+            series: [{ name: 'Uploads', data: Object.values(creatorCounts) }],
+            xaxis: { categories: Object.keys(creatorCounts) }
+        }).render();
+
+        // Recent table (last 5 by date)
+        let recent = metadata
+            .filter(m => m.date_of_creation)
+            .sort((a, b) => new Date(b.date_of_creation) - new Date(a.date_of_creation))
+            .slice(0, 5);
+
+        let tbody = $("#recent-table-body");
+        recent.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.filename}</td>
+                    <td>${item.title}</td>
+                    <td>${item.category}</td>
+                    <td>${item.creator}</td>
+                    <td>${item.date_of_creation}</td>
+                    <td><code>${item.wallet_address}</code></td>
+                </tr>
+            `);
+        });
+    });
+</script>
+

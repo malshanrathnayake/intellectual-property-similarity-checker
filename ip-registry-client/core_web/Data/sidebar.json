@@ -10,11 +10,6 @@
     "Url": "/Pdf/Landing/Index"
   },
   {
-    "Title": "Patent Similarity",
-    "Icon": "cil-file",
-    "Url": "/Patent/Landing/Index"
-  },
-  {
     "Title": "Related Patent",
     "Icon": "cil-lightbulb",
     "Children": [
@@ -43,7 +38,7 @@
     "Icon": "cil-layers",
     "Children": [
       {
-        "Title": "Wallet",
+        "Title": "Dashboard",
         "Url": "/Blockchain/Dashboard/Index"
       },
       {

@@ -19,6 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<BlockchainService>();
 builder.Services.AddSingleton<WalletService>();
+builder.Services.AddSingleton<ImageService>();
 
 var app = builder.Build();
 
