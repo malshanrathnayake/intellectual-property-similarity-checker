@@ -62,7 +62,7 @@
     "Url": "/Settings/User/Index"
   },
   {
-    "Title": "Premium Plans",
+    "Title": "Plans",
     "Icon": "cil-diamond",
     "Url": "/Common/Pricing/Index"
   }
