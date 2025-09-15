@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Registration Complete";
+}
+
+<div class="container mt-4">
+    <h4 class="mb-4">Registration Complete</h4>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Book Registered</h5>
+            <p><strong>Title:</strong> @ViewBag.Title</p>
+            <p><strong>Author:</strong> @ViewBag.Author</p>
+            <p><strong>Language:</strong> @ViewBag.Language</p>
+
+            <div class="mt-3">
+                <strong>Registered Book Link:</strong>
+                <a href="https://ipfs.io/ipfs/@ViewBag.IPFS" target="_blank" class="btn btn-link p-0">📖 Open Registered Book</a>
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary">
+                    ← Back to Check Similarity
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
