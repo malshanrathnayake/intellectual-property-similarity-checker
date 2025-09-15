@@ -31,7 +31,7 @@ namespace core_web.Areas.Blockchain.Controllers
             {
                 var result = await TransferOwnership(fromAddress, toAddress, tokenId);
                 TempData["SuccessMessage"] = $"Transfer successful! Tx Hash: {result.TxHash}";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Dashboard", new { area = "Blockchain" });
             }
             catch (Exception ex)
             {

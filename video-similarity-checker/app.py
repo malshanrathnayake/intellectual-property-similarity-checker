@@ -118,17 +118,7 @@ def upload_and_train_video():
         except OSError:
             pass
 
-        return jsonify({
-            "message": "Video trained successfully.",
-            "date_of_creation": date_of_creation,
-            "filename": video_name,
-            "title": title,
-            "category": category,
-            "creator": creator,
-            "description": description,
-            "published_source": published_source,
-            "wallet_address": wallet_address
-        })
+        return jsonify({"message": "Video trained successfully with metadata."})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -175,6 +165,20 @@ def check_video_similarity():
         os.remove(video_path)
 
         return jsonify({"similar_videos": results})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/get_all_video_metadata', methods=['GET'])
+def get_all_video_metadata():
+    try:
+        if not os.path.exists(metadata_file):
+            return jsonify([])
+
+        with open(metadata_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        return jsonify(data)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

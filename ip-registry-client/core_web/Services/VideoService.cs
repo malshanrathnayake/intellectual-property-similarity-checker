@@ -13,8 +13,7 @@ namespace core_web.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        // === Call Python similarity endpoint ===
-        public async Task<VideoSimilarityResponse?> CheckSimilarityAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
+        public async Task<List<Dictionary<string, object>>> CheckSimilarityAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
         {
             var client = _httpClientFactory.CreateClient();
 
@@ -22,15 +21,30 @@ namespace core_web.Services
             form.Add(new StreamContent(new MemoryStream(fileBytes)), "video", model.File.FileName);
 
             var response = await client.PostAsync("http://localhost:6000/check_video_similarity", form);
-            response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<VideoSimilarityResponse>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Similarity check failed: " + apiResponse);
+
+            using var doc = JsonDocument.Parse(apiResponse);
+            var results = new List<Dictionary<string, object>>();
+
+            if (doc.RootElement.TryGetProperty("similar_videos", out var simArray)
+                && simArray.ValueKind == JsonValueKind.Array)
+            {
+                results = simArray.EnumerateArray()
+                                  .Select(el => JsonSerializer.Deserialize<Dictionary<string, object>>(el.GetRawText())!)
+                                  .ToList();
+            }
+
+            return results;
         }
 
-        // === Call Python train endpoint ===
-        public async Task<TrainVideoResponse?> UploadAndTrainAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
+
+        /// <summary>
+        /// Uploads video + metadata to train endpoint
+        /// </summary>
+        public async Task<string> UploadAndTrainAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
         {
             var client = _httpClientFactory.CreateClient();
 
@@ -41,14 +55,17 @@ namespace core_web.Services
             form.Add(new StringContent(model.Description ?? ""), "description");
             form.Add(new StringContent(model.PublishedSource ?? ""), "published_source");
             form.Add(new StringContent(model.CreatorName), "creator");
+            form.Add(new StringContent(walletAddress), "wallet_address");
 
             var response = await client.PostAsync("http://localhost:6000/upload_and_train_video", form);
-            response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<TrainVideoResponse>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Training failed: " + apiResponse);
+
+            return apiResponse;
         }
+
 
         // === Upload video metadata to IPFS ===
         public async Task<IPFSResponse> UploadMetadataToIPFS(VideoMetadataDto model, string walletAddress)
@@ -129,15 +146,22 @@ namespace core_web.Services
         }
 
         // === DTOs for Python responses ===
-        public class SimilarVideo
-        {
-            public string Filename { get; set; }
-            public double Similarity { get; set; }
-        }
-
         public class VideoSimilarityResponse
         {
             public List<SimilarVideo> SimilarVideos { get; set; } = new();
+        }
+
+        public class SimilarVideo
+        {
+            public string Filename { get; set; }
+            public string Title { get; set; }
+            public string Category { get; set; }
+            public string Creator { get; set; }
+            public string Description { get; set; }
+            public string Published_Source { get; set; }  // match snake_case
+            public string Date_Of_Creation { get; set; }
+            public string Wallet_Address { get; set; }
+            public double Similarity { get; set; }
         }
 
         public class TrainVideoResponse

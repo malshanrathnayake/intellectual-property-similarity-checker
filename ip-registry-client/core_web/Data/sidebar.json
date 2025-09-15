@@ -46,14 +46,6 @@
         "Url": "/Blockchain/Wallet/Index"
       },
       {
-        "Title": "Transactions",
-        "Url": "/Blockchain/Transaction/Index"
-      },
-      {
-        "Title": "Contracts",
-        "Url": "/Blockchain/Contract/Index"
-      },
-      {
         "Title": "Transfer",
         "Url": "/Blockchain/Transfer/Index"
       }

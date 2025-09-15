@@ -21,7 +21,7 @@
         simResults = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(simResultsJson);
     }
 
-    var canRegister = true; // default to true, set false if high similarity is detected
+    var canRegister = false;
 }
 
 <div class="container mt-4">
@@ -73,9 +73,9 @@
                                 }
                                 var simPercent = (int)(simValue * 100);
 
-                                if (simPercent >= 30) // reject if similarity >= 30%
+                                if (simPercent < 30)
                                 {
-                                    canRegister = false;
+                                    canRegister = true;
                                 }
 
                                 <div class="list-group-item mb-3 rounded shadow-sm border p-3">
@@ -98,6 +98,7 @@
                     else
                     {
                         <div class="alert alert-info">No similar videos found in the registry.</div>
+                        canRegister = true;
                     }
 
                     <!-- Actions -->

@@ -23,11 +23,11 @@ namespace core_web.Areas.Video.Controllers
         // --- Index page: load all metadata ---
         public async Task<IActionResult> Index()
         {
-            //var client = _httpClientFactory.CreateClient();
-            //var response = await client.GetAsync("http://localhost:6000/get_all_metadata");
-            //var json = await response.Content.ReadAsStringAsync();
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync("http://localhost:6000/get_all_video_metadata");
+            var json = await response.Content.ReadAsStringAsync();
 
-            //ViewBag.MetadataJson = json;
+            ViewBag.MetadataJson = json;
             return View();
         }
 
@@ -67,7 +67,7 @@ namespace core_web.Areas.Video.Controllers
                 var trainResponse = await _videoService.UploadAndTrainAsync(model, walletAddress, fileBytes);
 
                 // Store into TempData for Results page
-                TempData["UploadResult"] = JsonSerializer.Serialize(new
+                TempData["VideoUploadResult"] = JsonSerializer.Serialize(new
                 {
                     Title = model.Title,
                     Category = model.Category,
@@ -94,7 +94,7 @@ namespace core_web.Areas.Video.Controllers
         [HttpGet]
         public IActionResult Results()
         {
-            if (TempData["UploadResult"] is string resultJson)
+            if (TempData["VideoUploadResult"] is string resultJson)
             {
                 var data = JsonSerializer.Deserialize<Dictionary<string, object>>(resultJson);
                 return View(data);
