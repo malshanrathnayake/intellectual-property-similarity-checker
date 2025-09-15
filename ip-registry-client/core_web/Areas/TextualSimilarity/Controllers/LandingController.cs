@@ -30,6 +30,12 @@ namespace core_web.Areas.Pdf.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RegisterResult()
+        {
+            return View();
+        }
+
         // --------------------------
         // 1. Similarity Check Action
         // --------------------------
@@ -118,7 +124,7 @@ namespace core_web.Areas.Pdf.Controllers
                 ViewBag.TokenId = tokenId;
                 ViewBag.IPFS = ipfsHash;
 
-                return View("Index");
+                return View("RegisterResult");
             }
             catch (Exception ex)
             {
