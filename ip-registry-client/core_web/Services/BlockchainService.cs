@@ -29,7 +29,7 @@ namespace core_web.Services
                 };
 
                 var client = _httpClientFactory.CreateClient(); // or use injected _httpClient
-                var response = await client.PostAsync("http://localhost:4000/ipfs/upload", form);
+                var response = await client.PostAsync("https://blockchain-api.azurewebsites.net/ipfs/upload", form);
                 response.EnsureSuccessStatusCode();
 
                 var ipfsResult = await response.Content.ReadFromJsonAsync<IPFSResponse>();
@@ -56,7 +56,7 @@ namespace core_web.Services
                     propertyType = "PDF"
                 };
 
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:4000/blockchain/register", payload);
+                var response = await _httpClient.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/blockchain/register", payload);
 
                 var responseBody = await response.Content.ReadAsStringAsync(); // Always read body
 
@@ -92,7 +92,7 @@ namespace core_web.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"http://localhost:4000/blockchain/tokens/{walletAddress}");
+                var response = await _httpClient.GetAsync($"https://blockchain-api.azurewebsites.net/blockchain/tokens/{walletAddress}");
                 var content = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -118,7 +118,7 @@ namespace core_web.Services
                     tokenId
                 };
 
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:4000/blockchain/transfer", payload);
+                var response = await _httpClient.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/blockchain/transfer", payload);
 
                 var content = await response.Content.ReadAsStringAsync();
 
@@ -137,7 +137,7 @@ namespace core_web.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"http://localhost:4000/blockchain/history/{tokenId}");
+                var response = await _httpClient.GetAsync($"https://blockchain-api.azurewebsites.net/blockchain/history/{tokenId}");
                 var content = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)

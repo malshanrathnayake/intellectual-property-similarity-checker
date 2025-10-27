@@ -22,7 +22,7 @@ namespace core_web.Services
             var client = _httpClientFactory.CreateClient();
 
             using var form = BuildForm(model, walletAddress, fileBytes);
-            var response = await client.PostAsync("http://localhost:7000/upload_and_train_image", form);
+            var response = await client.PostAsync("https://image-similarity-checker.azurewebsites.net/upload_and_train_image", form);
 
             var apiResponse = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -39,7 +39,7 @@ namespace core_web.Services
             var client = _httpClientFactory.CreateClient();
 
             using var form = BuildForm(model, walletAddress, fileBytes);
-            var response = await client.PostAsync("http://localhost:7000/check_image_similarity", form);
+            var response = await client.PostAsync("https://image-similarity-checker.azurewebsites.net/check_image_similarity", form);
 
             var apiResponse = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -106,7 +106,7 @@ namespace core_web.Services
                     wallet_address = walletAddress
                 };
 
-                var response = await client.PostAsJsonAsync("http://localhost:4000/ipfs/registerImage", payload);
+                var response = await client.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/ipfs/registerImage", payload);
                 var responseBody = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -135,7 +135,7 @@ namespace core_web.Services
                 var client = _httpClientFactory.CreateClient();
 
                 var payload = new { ipfsHash, walletAddress };
-                var response = await client.PostAsJsonAsync("http://localhost:4000/blockchain/register", payload);
+                var response = await client.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/blockchain/register", payload);
 
                 var responseBody = await response.Content.ReadAsStringAsync();
 

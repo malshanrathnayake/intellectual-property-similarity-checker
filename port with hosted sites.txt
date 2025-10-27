@@ -1,0 +1,6 @@
+blockchain port 4000 - https://blockchain-api.azurewebsites.net/
+image port 7000 - https://image-similarity-checker.azurewebsites.net/
+related patent port 8000 - https://related-patent-discovery.azurewebsites.net/
+video port 6000 - https://video-similarity-checker.azurewebsites.net/
+pdf port 5000 - https://pdf-similarity-checker.azurewebsites.net/
+ 

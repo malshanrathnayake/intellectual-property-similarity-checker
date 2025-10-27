@@ -24,7 +24,7 @@ namespace core_web.Areas.Video.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:6000/get_all_video_metadata");
+            var response = await client.GetAsync("https://video-similarity-checker.azurewebsites.net/get_all_video_metadata");
             var json = await response.Content.ReadAsStringAsync();
 
             ViewBag.MetadataJson = json;

@@ -1,0 +1,19 @@
+flask==3.0.2
+flask-cors==4.0.0
+
+# Embedding + Transformers
+sentence-transformers==2.7.0
+transformers==4.39.3
+
+# MUST stay below NumPy 2.0 for FAISS compatibility
+numpy==1.26.4
+
+# FAISS CPU (matching the NumPy ABI)
+faiss-cpu==1.7.4
+
+# PyMuPDF for PDF text extraction
+PyMuPDF==1.23.26
+
+# CPU ONLY PyTorch (fast install on Azure)
+torch==2.2.1+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu

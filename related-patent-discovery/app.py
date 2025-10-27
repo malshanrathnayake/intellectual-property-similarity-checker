@@ -216,3 +216,10 @@ def get_recent_patents(limit: int = 10):
         })
     return {"patents": results}
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"status": "running", "message": "PDF Similarity API is live!"})
+
+@app.route('/health', methods=['GET'])
+def health():
+    return "OK", 200

@@ -1,0 +1,55 @@
+//image
+az login
+az login --use-device-code //incase normal login not work
+az webapp config appsettings set --resource-group R25-016 --name image-similarity-checker --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+az webapp config appsettings set --resource-group R25-016 --name image-similarity-checker --settings ENABLE_ORYX_BUILD="true"
+az webapp config appsettings set --resource-group R25-016 --name image-similarity-checker --settings ORYX_BUILD_RUN_POST_BUILD=true
+az webapp config appsettings list --resource-group R25-016 --name image-similarity-checker
+Compress-Archive -Path * -DestinationPath deploy.zip -Force
+az webapp deployment source config-zip --resource-group R25-016 --name image-similarity-checker --src deploy.zip
+
+//pdf
+az login
+az login --use-device-code //incase normal login not work
+az webapp config appsettings set --resource-group R25-016 --name pdf-similarity-checker --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+az webapp config appsettings set --resource-group R25-016 --name pdf-similarity-checker --settings ENABLE_ORYX_BUILD="true"
+az webapp config appsettings set --resource-group R25-016 --name pdf-similarity-checker --settings ORYX_BUILD_RUN_POST_BUILD=true
+az webapp config appsettings list --resource-group R25-016 --name pdf-similarity-checker
+Compress-Archive -Path * -DestinationPath deploy.zip -Force
+az webapp deployment source config-zip --resource-group R25-016 --name pdf-similarity-checker --src deploy.zip
+
+//patent
+az login
+az login --use-device-code //incase normal login not work
+az webapp config appsettings set --resource-group R25-016 --name related-patent-discovery --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+az webapp config appsettings set --resource-group R25-016 --name related-patent-discovery --settings ENABLE_ORYX_BUILD="true"
+az webapp config appsettings set --resource-group R25-016 --name related-patent-discovery --settings ORYX_BUILD_RUN_POST_BUILD=true
+az webapp config appsettings list --resource-group R25-016 --name related-patent-discovery
+Compress-Archive -Path * -DestinationPath deploy.zip -Force
+az webapp deployment source config-zip --resource-group R25-016 --name related-patent-discovery --src deploy.zip
+
+//video
+az login
+az login --use-device-code //incase normal login not work
+az webapp config appsettings set --resource-group R25-016 --name video-similarity-checker --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+az webapp config appsettings set --resource-group R25-016 --name video-similarity-checker --settings ENABLE_ORYX_BUILD="true"
+az webapp config appsettings set --resource-group R25-016 --name video-similarity-checker --settings ORYX_BUILD_RUN_POST_BUILD=true
+az webapp config appsettings list --resource-group R25-016 --name video-similarity-checker
+Compress-Archive -Path * -DestinationPath deploy.zip -Force
+az webapp deployment source config-zip --resource-group R25-016 --name video-similarity-checker --src deploy.zip
+
+//blockchain
+//video
+az login
+az login --use-device-code //incase normal login not work
+az webapp config appsettings set --resource-group R25-016 --name blockchain-api --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+az webapp config appsettings set --resource-group R25-016 --name blockchain-api --settings ENABLE_ORYX_BUILD="true"
+az webapp config appsettings set --resource-group R25-016 --name blockchain-api --settings ORYX_BUILD_RUN_POST_BUILD=true
+az webapp config appsettings list --resource-group R25-016 --name blockchain-api
+Compress-Archive -Path * -DestinationPath deploy.zip -Force
+az webapp deployment source config-zip --resource-group R25-016 --name blockchain-api --src deploy.zip
+
+az webapp config set --resource-group image-similarity_group --name image-similarity --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 app:app"
+az webapp create --resource-group image-similarity_group --plan R25-016-plan --name image-similarity --runtime "PYTHON:3.10" 
+
+

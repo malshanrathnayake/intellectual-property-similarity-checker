@@ -26,7 +26,7 @@
         rejectionList.innerHTML = "";
 
         try {
-            const response = await fetch("http://localhost:8000/register/pdf", {
+            const response = await fetch("https://related-patent-discovery.azurewebsites.net/register/pdf", {
                 method: "POST",
                 body: formData,
             });
@@ -143,7 +143,7 @@
 
     async function loadApprovedPatents() {
         try {
-            const res = await fetch("http://localhost:8000/registered");
+            const res = await fetch("https://related-patent-discovery.azurewebsites.net/registered");
             const data = await res.json();
 
             const container = document.getElementById("approvedPatentsList");

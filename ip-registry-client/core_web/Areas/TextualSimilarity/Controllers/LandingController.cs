@@ -57,7 +57,7 @@ namespace core_web.Areas.Pdf.Controllers
                 similarityMs.Position = 0;
                 similarityRequest.Add(new StreamContent(similarityMs), "pdf", pdf.FileName);
 
-                var response = await client.PostAsync("http://localhost:5000/check_similarity", similarityRequest);
+                var response = await client.PostAsync("https://pdf-similarity-checker.azurewebsites.net/check_similarity", similarityRequest);
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();

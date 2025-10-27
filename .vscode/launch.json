@@ -60,6 +60,23 @@
         "FLASK_ENV": "development",
         "FLASK_APP": "app.py"
       }
+    },
+    {
+      "name": "IP Registry CoreWeb",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/ip-registry-client/core_web/bin/Debug/net8.0/core_web.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ip-registry-client/core_web",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   ]
 }

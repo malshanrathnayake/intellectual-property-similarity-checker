@@ -23,7 +23,7 @@ namespace core_web.Areas.Image.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:7000/get_all_metadata");
+            var response = await client.GetAsync("https://image-similarity-checker.azurewebsites.net/get_all_metadata");
             var json = await response.Content.ReadAsStringAsync();
             
             ViewBag.MetadataJson = json;

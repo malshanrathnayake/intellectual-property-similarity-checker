@@ -22,7 +22,7 @@
         spinner.classList.remove("d-none");
 
         try {
-            const response = await fetch(`http://localhost:8000/search?query=${encodeURIComponent(query)}`);
+            const response = await fetch(`https://related-patent-discovery.azurewebsites.net/search?query=${encodeURIComponent(query)}`);
             const data = await response.json();
             spinner.classList.add("d-none");
 

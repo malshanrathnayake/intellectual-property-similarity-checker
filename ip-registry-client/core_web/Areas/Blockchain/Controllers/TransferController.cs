@@ -47,7 +47,7 @@ namespace core_web.Areas.Blockchain.Controllers
             var payload = new { from, to, tokenId };
             var client = _httpClientFactory.CreateClient();
 
-            var response = await client.PostAsJsonAsync("http://localhost:4000/blockchain/transfer", payload);
+            var response = await client.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/blockchain/transfer", payload);
             var content = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)

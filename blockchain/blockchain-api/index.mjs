@@ -308,5 +308,6 @@ app.get('/blockchain/history/:tokenId', async (req, res) => {
   }
 });
 
-
-app.listen(4000, () => console.log("Blockchain service running on port 4000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Blockchain service running on port ${PORT}`));
+// app.listen(4000, () => console.log("Blockchain service running on port 4000"));
