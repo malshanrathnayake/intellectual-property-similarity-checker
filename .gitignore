@@ -9,6 +9,8 @@
 *.DS_Store
 Thumbs.db
 
+site-packages
+
 # Python
 *.pyc
 *.pyo
@@ -104,3 +106,7 @@ coverage.xml
 
 patents_bkup.json
 patents.json
+
+deploy-rpd
+
+related-patent-discovery.zip
