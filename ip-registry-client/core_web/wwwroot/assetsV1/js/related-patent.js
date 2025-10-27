@@ -74,7 +74,7 @@
                                 <div class="card-body">
                                     <p><strong>Title:</strong> ${item.title}</p>
                                     <div><strong>Abstract:</strong><br>${renderToggleText(item.abstract || "N/A", `rejectedAbstract${index}`)}</div>
-                                    <p><strong>Distance:</strong> ${item.faiss_distance}</p>
+                                    <p><strong>Similarity:</strong> ${item.similarity_percent?.toFixed(2) || ((1 - item.faiss_distance) * 100).toFixed(2)}%</p>
                                     ${item.pdf_cid ? `
                                         <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}" target="_blank" class="btn btn-sm btn-outline-primary me-2">View</a>
                                         <a href="https://gateway.pinata.cloud/ipfs/${item.pdf_cid}?download=true" target="_blank" class="btn btn-sm btn-outline-success">Download</a>

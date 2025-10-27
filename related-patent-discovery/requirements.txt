@@ -1,6 +1,5 @@
 fastapi==0.100.0
 uvicorn==0.22.0
-
 sentence-transformers==2.2.2
 
 # Ensure NumPy < 2.0 for FAISS compatibility
@@ -8,21 +7,18 @@ numpy==1.24.4
 
 # FAISS CPU that works with numpy 1.24.x
 faiss-cpu==1.7.4
-
+numpy==1.24.4
 PyMuPDF==1.22.3
 pdf2image==1.16.3
 pytesseract==0.3.10
-
 python-dotenv==1.0.0
 web3==5.31.4
 requests==2.31.0
 huggingface-hub==0.14.1
-python-multipart==0.0.6
-
-# ---- Test-only packages (optional to deploy) ----
-pytest==7.4.2
-httpx==0.25.0
-pytest-asyncio==0.21.1
-pytest-cov==4.1.0
-coverage==7.3.2
-flake8==6.1.0
+pytest
+httpx
+pytest-asyncio
+pytest-cov
+coverage
+flake8
+python-multipart

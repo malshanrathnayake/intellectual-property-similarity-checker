@@ -16,6 +16,7 @@ venv310/
 cache/
 *.npy
 *.index
+.pytest_cache
 
 # Patent data and sensitive info
 patents.json

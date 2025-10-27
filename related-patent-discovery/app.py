@@ -55,10 +55,13 @@ def search_patents(query: str = Query(...), top_k: int = 5, threshold: float = 1
     for dist, idx in zip(distances[0], indices[0]):
         if dist < threshold:
             result = patent_data[idx].copy()
-            result["faiss_distance"] = float(round(dist, 4))
+            similarity_percent = max(0, (1 - min(dist, 1)) * 100)
+            result["similarity_percent"] = round(similarity_percent, 2)
+            result["faiss_distance"] = float(round(dist, 4))  # keep raw for internal use
             cid = get_cid_from_blockchain(result["id"])
             result["cid"] = cid
             results.append(result)
+
 
     return {
         "query": query,
@@ -83,14 +86,16 @@ def register_patent(submission: PatentSubmission, threshold: float = 0.7):
     embedding = model.encode([content])
     distances, indices = index.search(np.array(embedding), 5)
 
-    similar = [
-        {
-            "id": patent_data[i]["id"],
-            "title": patent_data[i]["title"],
-            "faiss_distance": float(round(d, 4))
-        }
-        for d, i in zip(distances[0], indices[0]) if d < threshold
-    ]
+    similar = []
+    for d, i in zip(distances[0], indices[0]):
+        if d < threshold:
+            similarity_percent = max(0, (1 - min(d, 1)) * 100)
+            similar.append({
+                "id": patent_data[i]["id"],
+                "title": patent_data[i]["title"],
+                "faiss_distance": float(round(d, 4)),
+                "similarity_percent": round(similarity_percent, 2)
+            })
 
     if similar:
         return {
@@ -137,11 +142,13 @@ async def register_patent_pdf(file: UploadFile = File(...), threshold: float = 0
             if d < threshold:
                 matched = patent_data[i]
                 cid = get_cid_from_blockchain(matched["id"])  # fetch CID for rejected ones test
+                similarity_percent = max(0, (1 - min(d, 1)) * 100)
                 similar.append({
                     "id": matched["id"],
                     "title": matched["title"],
                     "abstract": matched.get("abstract", ""), 
                     "faiss_distance": float(round(d, 4)),
+                    "similarity_percent": round(similarity_percent, 2),
                     "cid": cid,
                     "pdf_cid": matched.get("pdf_cid")
                 })
