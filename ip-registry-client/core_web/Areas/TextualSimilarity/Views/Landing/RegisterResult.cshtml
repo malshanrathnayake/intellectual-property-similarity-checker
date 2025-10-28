@@ -3,26 +3,49 @@
     ViewData["Title"] = "Registration Complete";
 }
 
-<div class="container mt-4">
-    <h4 class="mb-4">Registration Complete</h4>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+        <h2 class="mt-3 fw-bold text-light">Registration Complete</h2>
+        <p class="text-secondary">Your book has been successfully registered on the platform.</p>
+    </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h5 class="card-title">Book Registered</h5>
-            <p><strong>Title:</strong> @ViewBag.Title</p>
-            <p><strong>Author:</strong> @ViewBag.Author</p>
-            <p><strong>Language:</strong> @ViewBag.Language</p>
+    <div class="card shadow-lg border-0 rounded-4 bg-dark text-light">
+        <div class="card-header bg-gradient fw-bold fs-5 text-light"
+             style="background: linear-gradient(90deg, #0d6efd, #6610f2);">
+            <i class="bi bi-journal-text me-2"></i> Registered Book Details
+        </div>
 
-            <div class="mt-3">
-                <strong>Registered Book Link:</strong>
-                <a href="https://ipfs.io/ipfs/@ViewBag.IPFS" target="_blank" class="btn btn-link p-0">📖 Open Registered Book</a>
+        <div class="card-body px-5 py-4">
+            <div class="mb-3">
+                <span class="fw-semibold text-secondary">Title:</span>
+                <span class="ms-2">@ViewBag.Title</span>
+            </div>
+            <div class="mb-3">
+                <span class="fw-semibold text-secondary">Author:</span>
+                <span class="ms-2">@ViewBag.Author</span>
+            </div>
+            <div class="mb-3">
+                <span class="fw-semibold text-secondary">Language:</span>
+                <span class="ms-2">@ViewBag.Language</span>
             </div>
 
-            <div class="mt-4">
-                <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity" class="btn btn-secondary">
-                    ← Back to Check Similarity
+            <hr class="my-4 opacity-25" />
+
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-link-45deg fs-4 me-2 text-primary"></i>
+                <span class="fw-semibold text-secondary">Registered Book Link:</span>
+                <a href="https://ipfs.io/ipfs/@ViewBag.IPFS" target="_blank" class="ms-2 text-decoration-none fw-semibold text-info">
+                  Open Registered Book
                 </a>
             </div>
+        </div>
+
+        <div class="card-footer text-center bg-dark border-0">
+            <a asp-action="Index" asp-controller="Landing" asp-area="TextualSimilarity"
+               class="btn btn-outline-light rounded-pill px-4">
+               Back to Check Similarity
+            </a>
         </div>
     </div>
 </div>
