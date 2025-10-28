@@ -1,6 +1,7 @@
 ﻿using core_web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -61,8 +62,30 @@ namespace core_web.Areas.Pdf.Controllers
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync();
-                var similarityData = JsonSerializer.Deserialize<SimilarityResponse>(content);
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        var json = JsonDocument.Parse(content);
+                        if (json.RootElement.TryGetProperty("message", out var msg))
+                        {
+                            ViewBag.Error = msg.GetString();
+                        }
+                        else
+                        {
+                            ViewBag.Error = $"Flask API error ({response.StatusCode}): {content}";
+                        }
+                    }
+                    catch
+                    {
+                        ViewBag.Error = $"Flask API error ({response.StatusCode}): {content}";
+                    }
+
+                    return View("Index");
+                }
+
+                var similarityData = JsonSerializer.Deserialize<SimilarityResponse>(content);
                 var results = similarityData?.similar_books ?? new List<SimilarPdf>();
                 double topScore = results.FirstOrDefault()?.Similarity ?? 0;
 
@@ -130,6 +153,49 @@ namespace core_web.Areas.Pdf.Controllers
             {
                 ViewBag.Error = ex.Message;
                 return View("Index");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DownloadReport(string resultsJson, string filename)
+        {
+            try
+            {
+                // 1️⃣ Validate incoming data
+                if (string.IsNullOrWhiteSpace(resultsJson))
+                    return BadRequest("No results to include in the report.");
+
+                // 2️⃣ Create HTTP client
+                var client = _httpClientFactory.CreateClient();
+
+                // 3️⃣ Build payload for Flask
+                var payload = new
+                {
+                    filename = filename ?? "UploadedDocument.pdf",
+                    similar_books = JsonSerializer.Deserialize<List<object>>(resultsJson)
+                };
+
+                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+                // 4️⃣ Send to Flask
+                var response = await client.PostAsync("http://localhost:5000/generate_report", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorText = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Flask API error ({response.StatusCode}): {errorText}");
+                }
+
+                // 5️⃣ Receive PDF from Flask and return it as a download
+                var pdfBytes = await response.Content.ReadAsByteArrayAsync();
+
+                return File(pdfBytes, "application/pdf", "Similarity_Report.pdf");
+            }
+            catch (Exception ex)
+            {
+                // Show a descriptive error
+                ViewBag.Error = ex.Message;
+                return View("Similarity");
             }
         }
 
