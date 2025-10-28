@@ -1,7 +1,9 @@
 ﻿@using System.Text.Json
+@model Dictionary<string, object>
+
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
-    ViewData["Title"] = "Image IPs";
+    ViewData["Title"] = "Video Upload Result";
 
     var title = Model?["Title"]?.ToString();
     var category = Model?["Category"]?.ToString();
@@ -30,7 +32,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="cil-check-circle me-2"></i> Image Upload Result
+                        <i class="cil-check-circle me-2"></i> Video Upload Result
                     </h5>
                     <span class="badge bg-light text-dark">@DateTime.Now.ToString("yyyy-MM-dd HH:mm")</span>
                 </div>
@@ -71,11 +73,7 @@
                                 }
                                 var simPercent = (int)(simValue * 100);
 
-                                if (simPercent >= 30)
-                                {
-                                    canRegister = false;
-                                }
-                                else
+                                if (simPercent < 30)
                                 {
                                     canRegister = true;
                                 }
@@ -99,20 +97,21 @@
                     }
                     else
                     {
-                        <div class="alert alert-info">No similar images found in the registry.</div>
+                        <div class="alert alert-info">No similar videos found in the registry.</div>
+                        canRegister = true;
                     }
 
                     <!-- Actions -->
                     <div class="d-flex justify-content-end mt-4">
-                        <a asp-action="Upload" asp-controller="Landing" asp-area="Image" class="btn btn-outline-secondary me-2">
+                        <a asp-action="Upload" asp-controller="Landing" asp-area="Video" class="btn btn-outline-secondary me-2">
                             <i class="cil-arrow-left me-1"></i> Upload Another
                         </a>
 
-                        @if(canRegister)
+                        @if (canRegister)
                         {
                             <a asp-action="RegisterOnBlockchain"
                                asp-controller="Landing"
-                               asp-area="Image"
+                               asp-area="Video"
                                asp-route-Title="@title"
                                asp-route-Category="@category"
                                asp-route-CreatorName="@creator"
@@ -130,8 +129,6 @@
                                 <i class="cil-layers me-1"></i> Register on Blockchain
                             </a>
                         }
-
-                        
                     </div>
 
                 </div>

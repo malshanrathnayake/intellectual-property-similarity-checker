@@ -10,6 +10,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from flask import send_file
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -143,11 +144,6 @@ def check_similarity():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from io import BytesIO
-from datetime import datetime
 
 @app.route('/generate_report', methods=['POST'])
 def generate_report():

@@ -1,45 +1,26 @@
-﻿using core_web.Areas.Image.Controllers;
-using System.Net.Http.Headers;
+﻿using core_web.Areas.Video.Controllers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace core_web.Services
 {
-    public class ImageService
+    public class VideoService
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ImageService(IHttpClientFactory httpClientFactory)
+        public VideoService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        /// <summary>
-        /// Uploads image + metadata to train endpoint
-        /// </summary>
-        public async Task<string> UploadAndTrainAsync(ImageUploadDto model, string walletAddress, byte[] fileBytes)
+        public async Task<List<Dictionary<string, object>>> CheckSimilarityAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
         {
             var client = _httpClientFactory.CreateClient();
 
-            using var form = BuildForm(model, walletAddress, fileBytes);
-            var response = await client.PostAsync("https://image-similarity-checker.azurewebsites.net/upload_and_train_image", form);
+            using var form = new MultipartFormDataContent();
+            form.Add(new StreamContent(new MemoryStream(fileBytes)), "video", model.File.FileName);
 
-            var apiResponse = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-                throw new Exception("Training failed: " + apiResponse);
-
-            return apiResponse;
-        }
-
-        /// <summary>
-        /// Runs similarity check for the uploaded image
-        /// </summary>
-        public async Task<List<Dictionary<string, object>>> CheckSimilarityAsync(ImageUploadDto model, string walletAddress, byte[] fileBytes)
-        {
-            var client = _httpClientFactory.CreateClient();
-
-            using var form = BuildForm(model, walletAddress, fileBytes);
-            var response = await client.PostAsync("https://image-similarity-checker.azurewebsites.net/check_image_similarity", form);
+            var response = await client.PostAsync("https://video-similarity-checker.azurewebsites.net/check_video_similarity", form);
 
             var apiResponse = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -48,47 +29,46 @@ namespace core_web.Services
             using var doc = JsonDocument.Parse(apiResponse);
             var results = new List<Dictionary<string, object>>();
 
-            if (doc.RootElement.TryGetProperty("similar_images", out var simArray) && simArray.ValueKind == JsonValueKind.Array)
+            if (doc.RootElement.TryGetProperty("similar_videos", out var simArray)
+                && simArray.ValueKind == JsonValueKind.Array)
             {
                 results = simArray.EnumerateArray()
-                                  .Select(el => JsonSerializer.Deserialize<Dictionary<string, object>>(el.GetRawText()))
-                                  .ToList()!;
+                                  .Select(el => JsonSerializer.Deserialize<Dictionary<string, object>>(el.GetRawText())!)
+                                  .ToList();
             }
 
             return results;
         }
 
-        /// <summary>
-        /// Builds multipart form with metadata + image stream
-        /// </summary>
-        private MultipartFormDataContent BuildForm(ImageUploadDto model, string walletAddress, byte[] fileBytes)
-        {
-            var form = new MultipartFormDataContent();
 
+        /// <summary>
+        /// Uploads video + metadata to train endpoint
+        /// </summary>
+        public async Task<string> UploadAndTrainAsync(VideoUploadDto model, string walletAddress, byte[] fileBytes)
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            using var form = new MultipartFormDataContent();
+            form.Add(new StreamContent(new MemoryStream(fileBytes)), "video", model.File.FileName);
             form.Add(new StringContent(model.Title), "title");
             form.Add(new StringContent(model.Category), "category");
+            form.Add(new StringContent(model.Description ?? ""), "description");
+            form.Add(new StringContent(model.PublishedSource ?? ""), "published_source");
             form.Add(new StringContent(model.CreatorName), "creator");
-            if (!string.IsNullOrEmpty(model.Description))
-                form.Add(new StringContent(model.Description), "description");
-            if (!string.IsNullOrEmpty(model.PublishedSource))
-                form.Add(new StringContent(model.PublishedSource), "published_source");
-            if (model.DateOfCreation.HasValue)
-                form.Add(new StringContent(model.DateOfCreation.Value.ToString("yyyy-MM-dd")), "date_of_creation");
-
             form.Add(new StringContent(walletAddress), "wallet_address");
 
-            var fileStream = new MemoryStream(fileBytes);
-            var fileContent = new StreamContent(fileStream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(model.File.ContentType);
-            form.Add(fileContent, "image", model.File.FileName);
+            var response = await client.PostAsync("https://video-similarity-checker.azurewebsites.net/upload_and_train_video", form);
 
-            return form;
+            var apiResponse = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Training failed: " + apiResponse);
+
+            return apiResponse;
         }
 
-        /// <summary>
-        /// Upload image metadata to IPFS (via Node.js backend).
-        /// </summary>
-        public async Task<IPFSResponse> UploadMetadataToIPFS(ImageMetadataDto model, string walletAddress)
+
+        // === Upload video metadata to IPFS ===
+        public async Task<IPFSResponse> UploadMetadataToIPFS(VideoMetadataDto model, string walletAddress)
         {
             try
             {
@@ -106,7 +86,7 @@ namespace core_web.Services
                     wallet_address = walletAddress
                 };
 
-                var response = await client.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/ipfs/registerImage", payload);
+                var response = await client.PostAsJsonAsync("https://blockchain-api.azurewebsites.net/ipfs/registerVideo", payload);
                 var responseBody = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -121,13 +101,11 @@ namespace core_web.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error uploading metadata to IPFS: " + ex.Message, ex);
+                throw new ApplicationException("Error uploading video metadata to IPFS: " + ex.Message, ex);
             }
         }
 
-        /// <summary>
-        /// Register the uploaded image metadata on blockchain.
-        /// </summary>
+        // === Register video metadata on blockchain ===
         public async Task<string> RegisterOnBlockchain(string ipfsHash, string walletAddress)
         {
             try
@@ -151,14 +129,12 @@ namespace core_web.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error registering on blockchain: " + ex.Message, ex);
+                throw new ApplicationException("Error registering video on blockchain: " + ex.Message, ex);
             }
         }
 
-        /// <summary>
-        /// Full workflow: Upload metadata → IPFS, then register on Blockchain.
-        /// </summary>
-        public async Task<(string IpfsHash, string TokenId)> RegisterImageAsync(ImageMetadataDto model, string walletAddress)
+        // === Full workflow: Upload metadata → IPFS, then register on Blockchain ===
+        public async Task<(string IpfsHash, string TokenId)> RegisterVideoAsync(VideoMetadataDto model, string walletAddress)
         {
             // 1. Upload metadata to IPFS
             var ipfsResult = await UploadMetadataToIPFS(model, walletAddress);
@@ -169,7 +145,32 @@ namespace core_web.Services
             return (ipfsResult.IpfsHash, tokenId);
         }
 
-        // DTOs
+        // === DTOs for Python responses ===
+        public class VideoSimilarityResponse
+        {
+            public List<SimilarVideo> SimilarVideos { get; set; } = new();
+        }
+
+        public class SimilarVideo
+        {
+            public string Filename { get; set; }
+            public string Title { get; set; }
+            public string Category { get; set; }
+            public string Creator { get; set; }
+            public string Description { get; set; }
+            public string Published_Source { get; set; }  // match snake_case
+            public string Date_Of_Creation { get; set; }
+            public string Wallet_Address { get; set; }
+            public double Similarity { get; set; }
+        }
+
+        public class TrainVideoResponse
+        {
+            public string Message { get; set; }
+            public string DateOfCreation { get; set; }
+        }
+
+        // === DTOs for IPFS + Blockchain responses ===
         public class IPFSResponse
         {
             [JsonPropertyName("ipfsHash")]

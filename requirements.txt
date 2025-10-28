@@ -14,3 +14,4 @@ requests==2.31.0
 nltk==3.8.1
 gutenbergpy
 tqdm==4.66.2
+web3==5.31.4

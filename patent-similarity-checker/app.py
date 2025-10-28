@@ -93,5 +93,13 @@ def train_patent():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"status": "running", "message": "PDF Similarity API is live!"})
+
+@app.route('/health', methods=['GET'])
+def health():
+    return "OK", 200
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)

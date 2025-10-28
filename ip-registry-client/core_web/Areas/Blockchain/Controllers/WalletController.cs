@@ -22,7 +22,7 @@ namespace core_web.Areas.Blockchain.Controllers
                 return RedirectToAction("Index", "Login", new { area = "Common" });
 
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"http://localhost:4000/blockchain/tokens/{walletAddress}");
+            var response = await client.GetAsync($"https://blockchain-api.azurewebsites.net/blockchain/tokens/{walletAddress}");
             var content = await response.Content.ReadAsStringAsync();
 
             var properties = JsonSerializer.Deserialize<List<NFTViewModel>>(content, new JsonSerializerOptions
@@ -38,7 +38,7 @@ namespace core_web.Areas.Blockchain.Controllers
         public async Task<IActionResult> TransactionHistory(string tokenId)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"http://localhost:4000/blockchain/history/{tokenId}");
+            var response = await client.GetAsync($"https://blockchain-api.azurewebsites.net/blockchain/history/{tokenId}");
 
             if (!response.IsSuccessStatusCode)
                 return View(new List<TransactionHistoryViewModel>());

@@ -20,6 +20,7 @@ builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<BlockchainService>();
 builder.Services.AddSingleton<WalletService>();
 builder.Services.AddSingleton<ImageService>();
+builder.Services.AddSingleton<VideoService>();
 
 var app = builder.Build();
 

@@ -1,89 +1,191 @@
-﻿@using core_web.Models
-
-@{
+﻿@{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
-    ViewData["Title"] = "Upload Video for Similarity Check";
+    ViewData["Title"] = "Video Dashboard";
+    var metadataJson = ViewBag.MetadataJson ?? "[]";
 }
 
 <div class="container mt-4">
-    <h4>Upload Intellectual Property Video</h4>
 
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger">@ViewBag.Error</div>
-    }
+    <div class="d-flex justify-content-end mb-4">
+        <a asp-action="Upload" asp-controller="Landing" asp-area="Video" class="btn btn-primary me-2">
+            <i class="cil-cloud-upload me-1"></i> Upload New Video
+        </a>
+    </div>
 
-    @if (ViewBag.Success != null && ViewBag.Success)
-    {
-        <div class="alert alert-success">
-            ✅ Similarity Check Completed.
-            <br />
-            📈 Similarity Score: @(ViewBag.SimilarityScore != null ? ((double)ViewBag.SimilarityScore).ToString("P2") : "N/A")<br />
-            @(ViewBag.Trained ? "🧠 Video has been trained (new entry added)." : "⚠️ Similarity too high, not trained.")
-        </div>
-
-        @if (ViewBag.Similar.Count > 0)
-        {
-            <div class="mt-3">
-                <h6>Top Matches</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Filename</th>
-                            <th>Similarity Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in ViewBag.Similar as List<SimilarVideo>)
-                        {
-                            <tr>
-                                <td>@item.Filename</td>
-                                <td>@(item.Similarity.ToString("P2"))</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <div class="row">
+        <!-- Summary Cards -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Videos</h5>
+                    <h2 id="total-videos">0</h2>
+                </div>
             </div>
-        }
-        else
-        {
-            <div class="alert alert-info mt-3">No similar videos found.</div>
-        }
-    }
-
-    <form asp-action="Index" asp-controller="Landing" asp-action="Video" method="post" enctype="multipart/form-data" id="uploadVideoForm">
-        <div class="mb-3">
-            <label class="form-label">Video Title</label>
-            <input name="videoTitle" class="form-control" required />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Creator Name</label>
-            <input name="creatorName" class="form-control" required />
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Unique Creators</h5>
+                    <h2 id="unique-creators">0</h2>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Category</label>
-            <input name="category" class="form-control" required />
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <h2 id="categories-count">0</h2>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Upload Video</label>
-            <input type="file" name="video" class="form-control" accept="video/*" required />
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Wallet Linked</h5>
+                    <h2 id="wallets-linked">0</h2>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <button type="submit" class="btn btn-primary">
-            <span id="spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-            Check & Train Video
-        </button>
-    </form>
+    <!-- Charts -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white"><h6>Videos by Category</h6></div>
+                <div class="card-body"><div id="categoryChart"></div></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white"><h6>Uploads Over Time</h6></div>
+                <div class="card-body"><div id="timelineChart"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet status -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white"><h6>Wallet Status</h6></div>
+                <div class="card-body"><div id="walletChart"></div></div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white"><h6>Top Creators</h6></div>
+                <div class="card-body"><div id="creatorChart"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Registrations -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white"><h6>Recent Registrations</h6></div>
+                <div class="card-body table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Creator</th>
+                                <th>Date</th>
+                                <th>Wallet</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-@section Scripts {
-    <script>
-        const form = document.getElementById('uploadVideoForm');
-        form.addEventListener('submit', function () {
-            document.getElementById('spinner').classList.remove('d-none');
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    $(document).ready(function () {
+        let metadata = @Html.Raw(metadataJson);
+
+        // Summary
+        $("#total-videos").text(metadata.length);
+        $("#unique-creators").text([...new Set(metadata.map(m => m.creator))].length);
+        $("#categories-count").text([...new Set(metadata.map(m => m.category))].length);
+        $("#wallets-linked").text(metadata.filter(m => m.wallet_address && m.wallet_address.length > 0).length);
+
+        // Group by category
+        let categoryCounts = {};
+        metadata.forEach(m => { if (m.category) categoryCounts[m.category] = (categoryCounts[m.category] || 0) + 1; });
+
+        new ApexCharts($("#categoryChart")[0], {
+            chart: { type: 'donut', foreColor: '#fff' },
+            series: Object.values(categoryCounts),
+            labels: Object.keys(categoryCounts)
+        }).render();
+
+        // Group by date
+        let timelineCounts = {};
+        metadata.forEach(m => {
+            if (m.date_of_creation)
+                timelineCounts[m.date_of_creation] = (timelineCounts[m.date_of_creation] || 0) + 1;
         });
-    </script>
-}
+        let dates = Object.keys(timelineCounts).sort();
+        let counts = dates.map(d => timelineCounts[d]);
+
+        new ApexCharts($("#timelineChart")[0], {
+            chart: { type: 'area', foreColor: '#fff' },
+            series: [{ name: 'Uploads', data: counts }],
+            xaxis: { categories: dates }
+        }).render();
+
+        // Wallet-linked vs missing
+        let walletLinked = metadata.filter(m => m.wallet_address && m.wallet_address.length > 0).length;
+        let walletMissing = metadata.length - walletLinked;
+
+        new ApexCharts($("#walletChart")[0], {
+            chart: { type: 'pie', foreColor: '#fff' },
+            series: [walletLinked, walletMissing],
+            labels: ["Linked", "Missing"]
+        }).render();
+
+        // Group by creator
+        let creatorCounts = {};
+        metadata.forEach(m => { if (m.creator) creatorCounts[m.creator] = (creatorCounts[m.creator] || 0) + 1; });
+
+        new ApexCharts($("#creatorChart")[0], {
+            chart: { type: 'bar', foreColor: '#fff' },
+            series: [{ name: 'Videos', data: Object.values(creatorCounts) }],
+            xaxis: { categories: Object.keys(creatorCounts) }
+        }).render();
+
+        // Recent table (last 5 by date)
+        let recent = metadata
+            .filter(m => m.date_of_creation)
+            .sort((a, b) => new Date(b.date_of_creation) - new Date(a.date_of_creation))
+            .slice(0, 5);
+
+        let tbody = $("#recent-table-body");
+        recent.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.filename}</td>
+                    <td>${item.title || '-'}</td>
+                    <td>${item.category || '-'}</td>
+                    <td>${item.creator || '-'}</td>
+                    <td>${item.date_of_creation || '-'}</td>
+                    <td><code>${item.wallet_address || '-'}</code></td>
+                    <td><a href="${item.published_source || '#'}" target="_blank">Source</a></td>
+                </tr>
+            `);
+        });
+    });
+</script>
